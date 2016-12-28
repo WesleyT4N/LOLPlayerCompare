@@ -19,7 +19,9 @@
   background-color: #0B1317;
   color: #C9AA71; }
 
-.main-info {
-  background-color: blue; }
+.pane {
+  background-color: grey; }
 
-/*# sourceMappingURL=main.css.map */
+#mainContentBox {
+  background-color: black;
+  margin: auto; }

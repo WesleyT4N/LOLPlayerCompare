@@ -1,5 +1,7 @@
 $navbar-color: #0B1317;
 $navbar-font-color: #AD9262;
+$navbar-font-color-interacted: #C9AA71;
+
 .navbar-brand {
   float: none;
   position: absolute;
@@ -15,7 +17,21 @@ $navbar-font-color: #AD9262;
   color: $navbar-font-color;
 }
 
-.navbar .navbar-brand:hover, .navbar .navbar-brand:active, .navbar .navbar-brand:visited, .navbar .navbar-brand:focus{
+.navbar .navbar-brand:hover, .navbar .navbar-brand:active, .navbar .navbar-brand:focus {
   background-color: $navbar-color;
-  color: $navbar-font-color;
+  color: $navbar-font-color-interacted;
+}
+
+.navbar .navbar-brand:visited {
+  background-color: $navbar-color;
+  color: $navbar-font-color-interacted;
+}
+
+.pane {
+  background-color: grey;
+}
+
+#mainContentBox {
+  background-color: black;
+  margin:auto;
 }
