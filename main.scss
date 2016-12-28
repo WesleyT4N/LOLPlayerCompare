@@ -1,7 +1,11 @@
 $navbar-color: #0B1317;
-$navbar-font-color: #AD9262;
-$navbar-font-color-interacted: #C9AA71;
-
+$navbar-font-color: #175CC4;
+$navbar-font-color-interacted:#175CC4;
+//#C9AA71; light gold
+//#AD9262; dark gold
+.navbar {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
 .navbar-brand {
   float: none;
   position: absolute;
@@ -10,7 +14,15 @@ $navbar-font-color-interacted: #C9AA71;
   top: 0;
   text-align: center;
   margin: auto;
-  background-color: $navbar-color;
+  // background-color: $navbar-color;
+  // transition: color 1s cubic-bezier(.06,.81,0,.98);
+  font-size: 24px;
+  font-family: 'Armata', sans-serif;
+}
+
+#LoL {
+  color: #AD9262;
+  font-size: 36px;
 }
 
 .navbar .navbar-brand {
@@ -18,20 +30,33 @@ $navbar-font-color-interacted: #C9AA71;
 }
 
 .navbar .navbar-brand:hover, .navbar .navbar-brand:active, .navbar .navbar-brand:focus {
-  background-color: $navbar-color;
+  // background-color: $navbar-color;
   color: $navbar-font-color-interacted;
 }
 
 .navbar .navbar-brand:visited {
-  background-color: $navbar-color;
-  color: $navbar-font-color-interacted;
+  // background-color: $navbar-color;
+  color: $navbar-font-color;
 }
 
 .pane {
-  background-color: grey;
+  background-color: #F8F8F8;
+  margin: 2% 1% 2% 1%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 }
 
-#mainContentBox {
-  background-color: black;
-  margin:auto;
+body {
+  background-color: #D5D7E2;
+}
+
+.player-search {
+  margin-top: 3%;
+}
+
+.search-box {
+  border-radius: 0px;
+}
+
+.btn-default {
+  border-radius: 0px;
 }
