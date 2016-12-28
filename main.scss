@@ -30,12 +30,10 @@ $navbar-font-color-interacted:#175CC4;
 }
 
 .navbar .navbar-brand:hover, .navbar .navbar-brand:active, .navbar .navbar-brand:focus {
-  // background-color: $navbar-color;
   color: $navbar-font-color-interacted;
 }
 
 .navbar .navbar-brand:visited {
-  // background-color: $navbar-color;
   color: $navbar-font-color;
 }
 
@@ -46,7 +44,7 @@ $navbar-font-color-interacted:#175CC4;
 }
 
 body {
-  background-color: #D5D7E2;
+  background-color: #D8D8D8;
 }
 
 .player-search {
