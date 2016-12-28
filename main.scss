@@ -1,0 +1,21 @@
+$navbar-color: #0B1317;
+$navbar-font-color: #AD9262;
+.navbar-brand {
+  float: none;
+  position: absolute;
+  width: 100%;
+  left: 0;
+  top: 0;
+  text-align: center;
+  margin: auto;
+  background-color: $navbar-color;
+}
+
+.navbar .navbar-brand {
+  color: $navbar-font-color;
+}
+
+.navbar .navbar-brand:hover, .navbar .navbar-brand:active, .navbar .navbar-brand:visited, .navbar .navbar-brand:focus{
+  background-color: $navbar-color;
+  color: $navbar-font-color;
+}

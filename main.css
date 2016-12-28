@@ -1,0 +1,18 @@
+.navbar-brand {
+  float: none;
+  position: absolute;
+  width: 100%;
+  left: 0;
+  top: 0;
+  text-align: center;
+  margin: auto;
+  background-color: #0B1317; }
+
+.navbar .navbar-brand {
+  color: #AD9262; }
+
+.navbar .navbar-brand:hover, .navbar .navbar-brand:active, .navbar .navbar-brand:visited, .navbar .navbar-brand:focus {
+  background-color: #0B1317;
+  color: #AD9262; }
+
+/*# sourceMappingURL=main.css.map */
