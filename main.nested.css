@@ -1,16 +1,15 @@
 .navbar {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24); }
-
-.navbar-brand {
-  float: none;
-  position: absolute;
-  width: 100%;
-  left: 0;
-  top: 0;
-  text-align: center;
-  margin: auto;
-  font-size: 24px;
-  font-family: 'Armata', sans-serif; }
+  .navbar .navbar-brand {
+    float: none;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 0;
+    text-align: center;
+    margin: auto;
+    font-size: 24px;
+    font-family: 'Armata', sans-serif; }
 
 #LoL {
   color: #AD9262;
@@ -31,15 +30,36 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24); }
 
 body {
+  padding-top: 72px;
   background-color: #D8D8D8; }
 
 .player-search {
-  margin-top: 3%; }
+  margin-top: 4%;
+  margin-bottom: 4%; }
+  .player-search .search-box {
+    border-radius: 0px; }
+  .player-search .btn-default {
+    border-radius: 0px; }
 
-.search-box {
-  border-radius: 0px; }
+.main-info {
+  margin-top: -5%;
+  margin-bottom: -2%; }
+  .main-info .rank-icon {
+    max-width: 150px;
+    max-height: 150px; }
 
-.btn-default {
-  border-radius: 0px; }
+.detailed-info {
+  margin-top: -5%; }
+  .detailed-info .most-played-icon {
+    max-width: 50px;
+    max-height: 50px; }
 
-/*# sourceMappingURL=main.nested.css.map */
+hr {
+  border-top: 1px solid #D8D8D8; }
+
+#border {
+  border-left: 1px solid #D8D8D8;
+  position: absolute;
+  top: 5%;
+  bottom: 5%;
+  left: 0px; }

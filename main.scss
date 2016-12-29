@@ -1,23 +1,24 @@
 $navbar-color: #0B1317;
 $navbar-font-color: #175CC4;
 $navbar-font-color-interacted:#175CC4;
+$border-color: #D8D8D8;
 //#C9AA71; light gold
 //#AD9262; dark gold
 .navbar {
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-}
-.navbar-brand {
-  float: none;
-  position: absolute;
-  width: 100%;
-  left: 0;
-  top: 0;
-  text-align: center;
-  margin: auto;
-  // background-color: $navbar-color;
-  // transition: color 1s cubic-bezier(.06,.81,0,.98);
-  font-size: 24px;
-  font-family: 'Armata', sans-serif;
+  .navbar-brand {
+    float: none;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 0;
+    text-align: center;
+    margin: auto;
+    // background-color: $navbar-color;
+    // transition: color 1s cubic-bezier(.06,.81,0,.98);
+    font-size: 24px;
+    font-family: 'Armata', sans-serif;
+  }
 }
 
 #LoL {
@@ -44,17 +45,44 @@ $navbar-font-color-interacted:#175CC4;
 }
 
 body {
-  background-color: #D8D8D8;
+  padding-top: 72px;
+  background-color: $border-color;
 }
 
 .player-search {
-  margin-top: 3%;
+  margin-top: 4%;
+  margin-bottom: 4%;
+  .search-box {
+    border-radius: 0px;
+  }
+  .btn-default {
+    border-radius: 0px;
+  }
+}
+.main-info  {
+  margin-top: -5%;
+  margin-bottom: -2%;
+  .rank-icon {
+    max-width: 150px;
+    max-height: 150px;
+  }
+}
+.detailed-info {
+  margin-top: -5%;
+  .most-played-icon {
+    max-width: 50px;
+    max-height: 50px;
+  }
 }
 
-.search-box {
-  border-radius: 0px;
+hr {
+  border-top: 1px solid $border-color;
 }
 
-.btn-default {
-  border-radius: 0px;
+#border  {
+     border-left: 1px solid $border-color;
+     position: absolute;
+     top: 5%;
+     bottom: 5%;
+     left: 0px;
 }
