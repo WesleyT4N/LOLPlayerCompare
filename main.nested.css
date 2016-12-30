@@ -18,7 +18,9 @@
 .navbar .navbar-brand {
   color: #175CC4; }
 
-.navbar .navbar-brand:hover, .navbar .navbar-brand:active, .navbar .navbar-brand:focus {
+.navbar .navbar-brand:hover,
+.navbar .navbar-brand:active,
+.navbar .navbar-brand:focus {
   color: #175CC4; }
 
 .navbar .navbar-brand:visited {
@@ -57,9 +59,14 @@ body {
 hr {
   border-top: 1px solid #D8D8D8; }
 
-#border {
+.border {
   border-left: 1px solid #D8D8D8;
   position: absolute;
   top: 5%;
   bottom: 5%;
   left: 0px; }
+
+.input-group-btn .region-menu {
+  min-width: 1px; }
+
+/*# sourceMappingURL=main.nested.css.map */
