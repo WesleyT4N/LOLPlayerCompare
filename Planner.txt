@@ -1,0 +1,9 @@
+1. Implement basic summoner search using Riot API (Replace Summoner names with actual ones once the search button is pressed)
+    -Needs to use regex to so we don't make unnecessary API calls
+    -Have a default message when summoner isn't found
+2. Ensure that correct rank icon is displayed that corresponds to the summoner's rank.
+    -Possibly use a map for this (i.e Rank to icon), could separate into different maps for each tier
+3. Obtain detailed statistics using Riot API
+    -Stats API should have all the numerics
+    -May need to use recent match history to get kill participation
+        (Divide total kills + assists from total team kills across all 10 games)
