@@ -46,6 +46,13 @@ body {
 .main-info {
   margin-top: -5%;
   margin-bottom: -2%; }
+  .main-info .player-name .profile-icon {
+    max-width: 48px;
+    max-height: 48px;
+    vertical-align: middle;
+    margin-bottom: 8px;
+    border: 2px solid white;
+    box-shadow: 0px 0px 1px black; }
   .main-info .rank-icon {
     max-width: 150px;
     max-height: 150px; }
@@ -68,5 +75,3 @@ hr {
 
 .input-group-btn .region-menu {
   min-width: 1px; }
-
-/*# sourceMappingURL=main.nested.css.map */

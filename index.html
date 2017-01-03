@@ -36,23 +36,27 @@
               <li id="kr1" value="KR"><a href="#" onclick="setRegion(kr1, player1Region)">KR</a></li>
             </ul>
           </div>
-          <input id="player1Search" class="search-box form-control" type="text" placeholder="Summoner 1" />
+          <input id="player1Search" class="search-box form-control" type="text" placeholder="Summoner 1"/>
           <div class="input-group-btn">
-            <button class="btn btn-default" id="search1"><i class="fa fa-search" aria-hidden="true"></i></button>
+            <button class="btn btn-default" onclick="summonerLookup(1)" id="search1"><i class="fa fa-search" aria-hidden="true"></i></button>
           </div>
         </div>
         <hr/>
         <div id="player1MainInfo" class="main-info container-fluid row">
-          <h1 class="text-center player-name col-md-12" id="summonerName1">Summoner 1</h1>
+          <h1 class="text-center player-name col-md-12">
+            <img id="player1ProfileIcon" class="profile-icon" src="http://ddragon.leagueoflegends.com/cdn/6.24.1/img/profileicon/659.png" />
+            <span id="summonerName1">Summoner Name 1</span>
+          </h1>
           <!--Change text using API-->
-          <h2 class="text-center player-rank col-md-8" id="summonerRank1">[Placeholder League]
+          <h2 class="text-center player-rank col-md-8">
+            <span id="summoner1Rank"></span>
             <br/>
             <span>
-              <h3>[Placeholder Division]</h3>
+              <h3 id="summoner1WinRatio">[Placeholder Division]</h3>
             </span>
           </h2>
           <!--Change text using API-->
-          <img id="summoner1RankIcon" class="col-md-4 rank-icon center-block" src="base_icons/gold.png" alt="Rank Icon">
+          <img id="summoner1RankIcon" class="col-md-4 rank-icon center-block img-responseive" src="base_icons/gold.png" alt="Rank Icon">
           <!--Change image link based on rank-->
         </div>
         <hr/>
@@ -98,16 +102,20 @@
             </div>
             <input id="player2Search" class="search-box form-control" type="text" placeholder="Summoner 2" />
             <div class="input-group-btn">
-              <button class="btn btn-default" id="search2" onclick="summonerLookup()"><i class="fa fa-search" aria-hidden="true"></i></button>
+              <button class="btn btn-default" id="search2" onclick="summonerLookup(2)"><i class="fa fa-search" aria-hidden="true"></i></button>
             </div>
           </div>
           <hr/>
           <div id="player2MainInfo" class="main-info container-fluid row">
-            <h1 class="text-center player-name col-md-12" id="summonerName2">Summoner 2</h1>
+            <h1 class="text-center player-name col-md-12">
+              <img id="player2ProfileIcon" class="profile-icon" src="http://ddragon.leagueoflegends.com/cdn/6.24.1/img/profileicon/659.png"/>
+              <span id="summonerName2">Summoner 2</span>
+            </h1>
             <!--Change text using API-->
-            <h2 class="text-center player-rank col-md-8" id="summonerRank2">[Placeholder League]
+            <h2 class="text-center player-rank col-md-8">
+              <span id="summoner2Rank">[Placeholder League]</span>
               <br/>
-              <span><h3>[Placeholder Division]</h3></span>
+              <span><h3 id="summoner2WinRatio">[Placeholder Division]</h3></span>
             </h2>
             <!--Change text using API-->
             <img id="summoner2RankIcon" class="col-md-4 rank-icon center-block" src="base_icons/gold.png" alt="Rank Icon">
