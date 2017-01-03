@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="main.nested.css">
   <script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA=" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <script src="main.js"></script>
 </head>
 
 <body>
@@ -26,18 +27,18 @@
       <div id="pane1" class="pane container-fluid">
         <div class="player-search input-group col-md-8 col-md-offset-2">
           <div class="input-group-btn">
-            <button id="player1Region" type="button" class="btn btn-default dropdown-toggle form-control" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button id="player1Region" type="button" value="" class="btn btn-default dropdown-toggle form-control" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Region
             </button>
             <ul class="dropdown-menu region-menu">
-              <li><a href="#">NA</a></li>
-              <li><a href="#">EUW</a></li>
-              <li><a href="#">KR</a></li>
+              <li id="na1" value="NA"><a href="#" onclick="setRegion(na1, player1Region)">NA</a></li>
+              <li id="euw1" value="EUW"><a href="#" onclick="setRegion(euw1, player1Region)">EUW</a></li>
+              <li id="kr1" value="KR"><a href="#" onclick="setRegion(kr1, player1Region)">KR</a></li>
             </ul>
           </div>
           <input id="player1Search" class="search-box form-control" type="text" placeholder="Summoner 1" />
           <div class="input-group-btn">
-            <button class="btn btn-default"><i class="fa fa-search" aria-hidden="true"></i></button>
+            <button class="btn btn-default" id="search1"><i class="fa fa-search" aria-hidden="true"></i></button>
           </div>
         </div>
         <hr/>
@@ -86,18 +87,18 @@
         <div id="pane2" class="pane container-fluid">
           <div class="player-search input-group col-md-8 col-md-offset-2">
             <div class="input-group-btn">
-              <button id="player2Region" type="button" class="btn btn-default dropdown-toggle form-control" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <button id="player2Region" type="button" value="" class="btn btn-default dropdown-toggle form-control" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Region
               </button>
-              <ul class="dropdown-menu region-menu">
-                <li><a href="#">NA</a></li>
-                <li><a href="#">EUW</a></li>
-                <li><a href="#">KR</a></li>
+              <ul class="dropdown-menu region-menu" id="regionMenu1">
+                <li id="na2" value="NA"><a href="#"  onclick="setRegion(na2, player2Region)">NA</a></li>
+                <li id="euw2" value="EUW"><a href="#" onclick="setRegion(euw2, player2Region)">EUW</a></li>
+                <li id="kr2" value="KR"><a hre="#" onclick="setRegion(kr2, player2Region)">KR</a></li>
               </ul>
             </div>
             <input id="player2Search" class="search-box form-control" type="text" placeholder="Summoner 2" />
             <div class="input-group-btn">
-              <button class="btn btn-default"><i class="fa fa-search" aria-hidden="true"></i></button>
+              <button class="btn btn-default" id="search2" onclick="summonerLookup()"><i class="fa fa-search" aria-hidden="true"></i></button>
             </div>
           </div>
           <hr/>
