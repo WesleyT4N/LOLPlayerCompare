@@ -1,7 +1,10 @@
+var currSumm1;
+var currSumm2;
 $(function() {
   $(".main-info").hide();
   $(".detailed-info").hide();
   $("hr").hide();
+  $("#compareDiv").hide();
 });
 
 function setRegion(regionVal, selectorId) {
@@ -11,8 +14,6 @@ function setRegion(regionVal, selectorId) {
   $(selectorId).attr("value", regionVal);
 }
 
-var currSumm1;
-var currSumm2;
 var API_KEY = "RGAPI-217a0491-95a0-4107-9d45-93ac21a49b94";
 function summonerLookup(playerNum) {
   var SUMMONER_NAME = "";
@@ -55,9 +56,9 @@ function summonerLookup(playerNum) {
       },
       success: function (json) {
         if (playerNum == 1)
-          currSumm1 = SUMMONER_NAME_NO_SPACE;
+        currSumm1 = SUMMONER_NAME_NO_SPACE;
         else
-          currSumm2 = SUMMONER_NAME_NO_SPACE;
+        currSumm2 = SUMMONER_NAME_NO_SPACE;
         SUMMONER_NAME = json[SUMMONER_NAME_NO_SPACE].name;
         var summonerId = json[SUMMONER_NAME_NO_SPACE].id;
         var profileIconNum = json[SUMMONER_NAME_NO_SPACE].profileIconId;
@@ -65,9 +66,10 @@ function summonerLookup(playerNum) {
         "http://ddragon.leagueoflegends.com/cdn/6.24.1/img/profileicon/"+ profileIconNum+ ".png");
         document.getElementById('summonerName' + playerNum).innerHTML = SUMMONER_NAME;
         getSummonerRank(summonerId, playerNum, REGION);
-        getPlayerStats(summonerId, playerNum, REGION)
         $('#player'+playerNum+'MainInfo').show();
-        $('#player'+playerNum+'DetailedInfo').show();
+        $('.hr-'+playerNum+'-2').hide();
+        $('#player'+playerNum+'DetailedInfo').hide();
+        resetTextColors()
       },
       error: function (XMLHttpRequest, textStatus, errorThrown) {
         alert("Error getting Summoner data !");
@@ -76,6 +78,14 @@ function summonerLookup(playerNum) {
   } else { return;}
 }
 
+function resetTextColors() {
+  $("#summoner1Rank").css("color", "black");
+  $("#summoner2Rank").css("color", "black");
+  $("#summoner1WinRatio").css("color", "black");
+  $("#summoner2WinRatio").css("color", "black");
+  $("#player1KDA").css("color", "black");
+  $("#player2KDA").css("color", "black");
+}
 function getSummonerRank(summonerId, playerNum, reg) {
   $.ajax({
     url: "https://na.api.pvp.net/api/lol/" + reg + "/v2.5/league/by-summoner/"+ summonerId +"/entry/" + '?api_key=' + API_KEY,
@@ -89,193 +99,292 @@ function getSummonerRank(summonerId, playerNum, reg) {
       tier[0] = tier[0].toUpperCase();
       tier = tier.join('');
       if (tier === "Master" || tier === "Challenger")
-        var division = "";
+      var division = "";
       else
-        var division = json[summonerId][0].entries[0].division;
+      var division = json[summonerId][0].entries[0].division;
       var lp = json[summonerId][0].entries[0].leaguePoints;
       var wins = json[summonerId][0].entries[0].wins;
       var losses = json[summonerId][0].entries[0].losses
       var winRate = wins / (wins + losses) * 100;
       winRate = winRate.toFixed(2);
       var rankedIconLocation = setRankedIcon(tier, division);
-      $('.hr-'+playerNum).show();
+      getPlayerStats(summonerId, playerNum, reg);
+      $('.hr-'+playerNum+'-1').show();
       document.getElementById('summoner' + playerNum + 'Rank').innerHTML = tier + " " + division + " - " + lp + " LP";
-      document.getElementById('summoner' + playerNum + 'WinRatio').innerHTML = "Win Ratio: " + winRate + "% " +
+      document.getElementById('summoner' + playerNum + 'WinRatio').innerHTML = winRate + "% " +
       "<br/>(" + wins + "W " + losses + "L)" ;
       document.getElementById('summoner' + playerNum +'RankIcon').setAttribute("src", rankedIconLocation);
-    },
-    error: function (XMLHttpRequest, textStatus, errorThrown) {
-      if (errorThrown === "Not Found") {
-        document.getElementById('summoner' + playerNum + 'Rank').innerHTML = "Unranked";
-        document.getElementById('summoner' + playerNum + 'WinRatio').innerHTML = "Win Ratio: n/a ";
-        document.getElementById('summoner' + playerNum +'RankIcon').setAttribute("src", "./base_icons/provisional.png");
-      }
-    }
-  });
-}
-
-function setRankedIcon(tier, division) {
-  tier = tier.toLowerCase();
-  division = division.toLowerCase();
-  if (tier === "master" || tier === "challenger")
-  var location = "./base_icons/" + tier + ".png";
-  else
-  var location = "./tier_icons/" + tier + "_" + division + ".png";
-  return location
-}
-
-function getPlayerStats(summonerId, num, reg) {
-  $.ajax({
-    url: "https://na.api.pvp.net/api/lol/"+ reg + "/v1.3/stats/by-summoner/"+ summonerId + "/ranked?api_key=" + API_KEY,
-    type: 'GET',
-    data: {
-
-    },
-    success: function(json) {
-      var data = json.champions;
-      var totals;
-      for (var key in data) {
-        if (data[key].id == 0) {
-          totals = data[key];
-          break;
+      if (currSumm1 !== undefined && currSumm2 !== undefined &&
+        $("#summoner1Rank").html() !== "Unranked" && $("#summoner2Rank").html() !== "Unranked") {
+          $("#compareDiv").show();
+        }
+      },
+      error: function (XMLHttpRequest, textStatus, errorThrown) {
+        if (errorThrown === "Not Found") {
+          $("#compareDiv").hide();
+          $('.hr-'+playerNum+'-1').show();
+          document.getElementById('summoner' + playerNum + 'Rank').innerHTML = "Unranked";
+          document.getElementById('summoner' + playerNum + 'WinRatio').innerHTML = "Win Ratio: n/a ";
+          document.getElementById('summoner' + playerNum +'RankIcon').setAttribute("src", "./base_icons/provisional.png");
+          document.getElementById('player'+playerNum+'KDA').innerHTML = "n/a";
+          document.getElementById('player'+playerNum+'Kills').innerHTML = "n/a";
+          document.getElementById('player'+playerNum+'Deaths').innerHTML = "n/a";
+          document.getElementById('player'+playerNum+'Assists').innerHTML = "n/a";
+          document.getElementById('player'+playerNum+'CS').innerHTML = "n/a";
+          document.getElementById("player"+playerNum+"MostPlayedChamp").innerHTML = "n/a";
+          $("#player"+playerNum+"MostPlayedIcon").hide();
+          document.getElementById("player"+playerNum+"MostPlayedRole").innerHTML = "n/a";
         }
       }
-      totals = totals.stats;
-      var favChampId = getFavoriteChampionId(data);
-      var favChampWR = getFavChampWinRate(data, favChampId);
-      var totalKills = totals.totalChampionKills;
-      var totalDeaths = totals.totalDeathsPerSession;
-      var totalAssists = totals.totalAssists;
-      var totalCS = totals.totalMinionKills + totals.totalNeutralMinionsKilled;
-      var totalGames = totals.totalSessionsPlayed;
-      var kda = (totalKills + totalAssists) / totalDeaths;
-      kda = kda.toFixed(2) + " : 1";
-
-      var avgKills = totalKills / totalGames;
-      avgKills = avgKills.toFixed(2);
-      var avgDeaths = totalDeaths / totalGames;
-      avgDeaths = avgDeaths.toFixed(2);
-      var avgAssists =  totalAssists / totalGames;
-      avgAssists = avgAssists.toFixed(2);
-      var avgCS = totalCS / totalGames;
-      avgCS = avgCS.toFixed(2);
-      setFavChampion(favChampId, num, reg);
-      setMostPlayedRole(summonerId, num, reg);
-      document.getElementById('player'+num+'KDA').innerHTML = kda;
-      document.getElementById('player'+num+'Kills').innerHTML = avgKills;
-      document.getElementById('player'+num+'Deaths').innerHTML = avgDeaths;
-      document.getElementById('player'+num+'Assists').innerHTML = avgAssists;
-      document.getElementById('player'+num+'CS').innerHTML = avgCS;
-      document.getElementById("player"+num+"MostPlayedWR").innerHTML = favChampWR;
-      compare();
-    },
-    error: function (XMLHttpRequest, textStatus, errorThrown) {
-      document.getElementById('player'+num+'KDA').innerHTML = "n/a";
-      document.getElementById('player'+num+'Kills').innerHTML = "n/a";
-      document.getElementById('player'+num+'Deaths').innerHTML = "n/a";
-      document.getElementById('player'+num+'Assists').innerHTML = "n/a";
-      document.getElementById('player'+num+'CS').innerHTML = "n/a";
-    }
-  });
-}
-
-function getFavoriteChampionId(data) {
-  var maxGames = 0;
-  var champId;
-  for (var key in data) {
-    var n = data[key].stats.totalSessionsPlayed;
-    if (n > maxGames && data[key].id != 0) {
-      maxGames = n;
-      champId = data[key].id;
-    }
+    });
   }
-  return champId;
-}
 
-function getFavChampWinRate(data, favChampId) {
-  var totalWins;
-  var totalGames;
-  for (var key in data) {
-    if (data[key].id == favChampId) {
-      totalWins = data[key].stats.totalSessionsWon;
-      totalGames = data[key].stats.totalSessionsPlayed;
-      break;
-    }
+  function setRankedIcon(tier, division) {
+    tier = tier.toLowerCase();
+    division = division.toLowerCase();
+    if (tier === "master" || tier === "challenger")
+    var location = "./base_icons/" + tier + ".png";
+    else
+    var location = "./tier_icons/" + tier + "_" + division + ".png";
+    return location
   }
-  var winRate = (totalWins/totalGames*100).toFixed(2);
-  return winRate + "%";
-}
 
-function setFavChampion(id, num, reg) {
-  $.ajax({
-    url:"https://global.api.pvp.net/api/lol/static-data/"+ reg+"/v1.2/champion/"+id+"?champData=image&api_key=" + API_KEY,
-    type: 'GET',
-    data: {
+  function getPlayerStats(summonerId, num, reg) {
+    $.ajax({
+      url: "https://na.api.pvp.net/api/lol/"+ reg + "/v1.3/stats/by-summoner/"+ summonerId + "/ranked?api_key=" + API_KEY,
+      type: 'GET',
+      data: {
 
-    },
-    success: function(json) {
-      var champName = json.name;
-      var champImgName = json.image.full;
-      var iconURL = "http://ddragon.leagueoflegends.com/cdn/6.24.1/img/champion/" + champImgName;
-      document.getElementById("player"+num+"MostPlayedChamp").innerHTML = champName;
-      document.getElementById("player"+num+"MostPlayedIcon").setAttribute("src", iconURL);
-    },
-    error: function (XMLHttpRequest, textStatus, errorThrown) {
-      document.getElementById("player"+num+"MostPlayedChamp").innerHTML = "n/a";
+      },
+      success: function(json) {
+        var data = json.champions;
+        var totals;
+        for (var key in data) {
+          if (data[key].id == 0) {
+            totals = data[key];
+            break;
+          }
+        }
+        totals = totals.stats;
+        var favChampId = getFavoriteChampionId(data);
+        var favChampWR = getFavChampWinRate(data, favChampId);
+        var totalKills = totals.totalChampionKills;
+        var totalDeaths = totals.totalDeathsPerSession;
+        var totalAssists = totals.totalAssists;
+        var totalCS = totals.totalMinionKills + totals.totalNeutralMinionsKilled;
+        var totalGames = totals.totalSessionsPlayed;
+        var kda = (totalKills + totalAssists) / totalDeaths;
+        kda = kda.toFixed(2) + " : 1";
+
+        var avgKills = totalKills / totalGames;
+        avgKills = avgKills.toFixed(2);
+        var avgDeaths = totalDeaths / totalGames;
+        avgDeaths = avgDeaths.toFixed(2);
+        var avgAssists =  totalAssists / totalGames;
+        avgAssists = avgAssists.toFixed(2);
+        var avgCS = totalCS / totalGames;
+        avgCS = avgCS.toFixed(2);
+        setFavChampion(favChampId, num, reg);
+        setMostPlayedRole(summonerId, num, reg);
+        $("#player"+num+"MostPlayedIcon").show();
+        document.getElementById('player'+num+'KDA').innerHTML = kda;
+        document.getElementById('player'+num+'Kills').innerHTML = avgKills;
+        document.getElementById('player'+num+'Deaths').innerHTML = avgDeaths;
+        document.getElementById('player'+num+'Assists').innerHTML = avgAssists;
+        document.getElementById('player'+num+'CS').innerHTML = avgCS;
+        document.getElementById("player"+num+"MostPlayedWR").innerHTML = favChampWR;
+      },
+      error: function (XMLHttpRequest, textStatus, errorThrown) {
+        document.getElementById('player'+num+'KDA').innerHTML = "n/a";
+        document.getElementById('player'+num+'Kills').innerHTML = "n/a";
+        document.getElementById('player'+num+'Deaths').innerHTML = "n/a";
+        document.getElementById('player'+num+'Assists').innerHTML = "n/a";
+        document.getElementById('player'+num+'CS').innerHTML = "n/a";
+        document.getElementById("player"+num+"MostPlayedChamp").innerHTML = "n/a";
+        $("#player"+num+"MostPlayedIcon").hide();
+        document.getElementById("player"+num+"MostPlayedRole").innerHTML = "n/a";
+      }
+    });
+  }
+
+  function getFavoriteChampionId(data) {
+    var maxGames = 0;
+    var champId;
+    for (var key in data) {
+      var n = data[key].stats.totalSessionsPlayed;
+      if (n > maxGames && data[key].id != 0) {
+        maxGames = n;
+        champId = data[key].id;
+      }
     }
-  });
-}
+    return champId;
+  }
 
-function setMostPlayedRole(summId, num, reg) {
-  $.ajax({
-    url: "https://na.api.pvp.net/api/lol/"+reg+"/v2.2/matchlist/by-summoner/"+summId+"?rankedQueues=TEAM_BUILDER_RANKED_SOLO&api_key=" + API_KEY,
-    type: 'GET',
-    data: {
-
-    },
-    success: function(json) {
-      var main = getMostPlayedRole(json.matches);
-      document.getElementById("player"+num+"MostPlayedRole").innerHTML = main;
-    },
-    error: function (XMLHttpRequest, textStatus, errorThrown) {
-      document.getElementById("player"+num+"MostPlayedRole").innerHTML = "n/a";
+  function getFavChampWinRate(data, favChampId) {
+    var totalWins;
+    var totalGames;
+    for (var key in data) {
+      if (data[key].id == favChampId) {
+        totalWins = data[key].stats.totalSessionsWon;
+        totalGames = data[key].stats.totalSessionsPlayed;
+        break;
+      }
     }
-  });
-}
+    var winRate = (totalWins/totalGames*100).toFixed(2);
+    return winRate + "%";
+  }
 
-function getMostPlayedRole(matches) {
-  var roleCount = {Top: 0, Mid: 0, Jungle: 0, ADC: 0, Support: 0};
-  var role;
-  for (var m in matches) {
-    role = matches[m].lane;
-    switch (role) {
-      case 'MID':
+  function setFavChampion(id, num, reg) {
+    $.ajax({
+      url:"https://global.api.pvp.net/api/lol/static-data/"+ reg+"/v1.2/champion/"+id+"?champData=image&api_key=" + API_KEY,
+      type: 'GET',
+      data: {
+
+      },
+      success: function(json) {
+        var champName = json.name;
+        var champImgName = json.image.full;
+        var iconURL = "http://ddragon.leagueoflegends.com/cdn/6.24.1/img/champion/" + champImgName;
+        document.getElementById("player"+num+"MostPlayedChamp").innerHTML = champName;
+        document.getElementById("player"+num+"MostPlayedIcon").setAttribute("src", iconURL);
+      },
+      error: function (XMLHttpRequest, textStatus, errorThrown) {
+        document.getElementById("player"+num+"MostPlayedChamp").innerHTML = "n/a";
+      }
+    });
+  }
+
+  function setMostPlayedRole(summId, num, reg) {
+    $.ajax({
+      url: "https://na.api.pvp.net/api/lol/"+reg+"/v2.2/matchlist/by-summoner/"+summId+"?rankedQueues=TEAM_BUILDER_RANKED_SOLO&api_key=" + API_KEY,
+      type: 'GET',
+      data: {
+
+      },
+      success: function(json) {
+        var main = getMostPlayedRole(json.matches);
+        document.getElementById("player"+num+"MostPlayedRole").innerHTML = main;
+      },
+      error: function (XMLHttpRequest, textStatus, errorThrown) {
+        document.getElementById("player"+num+"MostPlayedRole").innerHTML = "n/a";
+      }
+    });
+  }
+
+  function getMostPlayedRole(matches) {
+    var roleCount = {Top: 0, Mid: 0, Jungle: 0, ADC: 0, Support: 0};
+    var role;
+    for (var m in matches) {
+      role = matches[m].lane;
+      switch (role) {
+        case 'MID':
         roleCount.Mid++;
         break;
-      case 'TOP':
+        case 'TOP':
         roleCount.Top++;
         break;
-      case 'JUNGLE':
+        case 'JUNGLE':
         roleCount.Jungle++;
         break;
-      case 'BOTTOM':
+        case 'BOTTOM':
         if (matches[m].role === "DUO_CARRY")
-          roleCount.ADC++;
+        roleCount.ADC++;
         else
-          roleCount.Support++;
+        roleCount.Support++;
         break;
-      default:
+        default:
         break;
+      }
+    }
+
+    var maxGames = 0;
+    var mainRole;
+    for (var key in roleCount) {
+      if (roleCount[key] > maxGames) {
+        maxGames = roleCount[key];
+        mainRole = key;
+      }
+    }
+    return mainRole;
+  }
+
+  function compare() {
+    compareRank();
+    compareStats();
+  }
+
+  function compareRank() {
+    $('.hr-1-2').show();
+    $('.hr-2-2').show();
+    $('#player1DetailedInfo').show();
+    $('#player2DetailedInfo').show();
+    var tierValues = {
+      Bronze: 0, Silver: 1, Gold: 2, Platinum: 3, Diamond: 4, Master: 5, Challenger: 6
+    }
+    var divisionValues = {
+      I : 1, II: 2, III:3, IV:4, V: 5
+    }
+    var player1Rank = $("#summoner1Rank").html().split(" ");
+    var player2Rank = $("#summoner2Rank").html().split(" ");
+    var player1Tier = player1Rank[0];
+    var player2Tier = player2Rank[0];
+    if (tierValues[player1Tier] > tierValues[player2Tier]) {
+      $("#summoner1Rank").css("color", "#175CC4");
+      $("#summoner2Rank").css("color", "red");
+    } else if (tierValues[player1Tier] < tierValues[player2Tier]) {
+      $("#summoner1Rank").css("color", "red");
+      $("#summoner2Rank").css("color", "#175CC4");
+    } else {
+      var player1Div = player1Rank[1];
+      var player2Div = player2Rank[1];
+      if (divisionValues[player1Div] < divisionValues[player2Div]) {
+        $("#summoner1Rank").css("color", "#175CC4");
+        $("#summoner2Rank").css("color", "red");
+      } else if (divisionValues[player1Div] > divisionValues[player2Div]) {
+        $("#summoner1Rank").css("color", "red");
+        $("#summoner2Rank").css("color", "#175CC4");
+      } else {
+        var player1LP = player1Rank[3];
+        var player2LP = player2Rank[3];
+        if (player1LP > player2LP) {
+          $("#summoner1Rank").css("color", "#175CC4");
+          $("#summoner2Rank").css("color", "red");
+        } else if (player1LP < player2LP) {
+          $("#summoner1Rank").css("color", "red");
+          $("#summoner2Rank").css("color", "#175CC4");
+        } else {
+          $("#summoner1Rank").css("color", "#175CC4");
+          $("#summoner2Rank").css("color", "#175CC4");
+        }
+      }
+    }
+
+    var player1WR = $("#summoner1WinRatio").html().split(" ")[0].replace("%", "");
+    var player2WR = $("#summoner2WinRatio").html().split(" ")[0].replace("%", "");
+    if (parseFloat(player1WR) > parseFloat(player2WR)) {
+      $("#summoner1WinRatio").css("color", "#175CC4");
+      $("#summoner2WinRatio").css("color", "red");
+    } else if (parseFloat(player1WR) < parseFloat(player2WR)) {
+      $("#summoner1WinRatio").css("color", "red");
+      $("#summoner2WinRatio").css("color", "#175CC4");
+    } else {
+      $("#summoner1WinRatio").css("color", "#175CC4");
+      $("#summoner2WinRatio").css("color", "#175CC4");
     }
   }
 
-  var maxGames = 0;
-  var mainRole;
-  for (var key in roleCount) {
-    if (roleCount[key] > maxGames) {
-      maxGames = roleCount[key];
-      mainRole = key;
+  function compareStats() {
+    var player1KDA = $("#player1KDA").html().split(" ")[0];
+    var player2KDA = $("#player2KDA").html().split(" ")[0];
+    console.log(player1KDA);
+    if (parseFloat(player1KDA) > parseFloat(player2KDA)) {
+      $("#player1KDA").css("color", "#175CC4");
+      $("#player2KDA").css("color", "red");
+    } else if (parseFloat(player1KDA) < parseFloat(player2KDA)) {
+      $("#player1KDA").css("color", "red");
+      $("#player2KDA").css("color", "#175CC4");
+    } else {
+      $("#player1KDA").css("color", "#175CC4");
+      $("#player2KDA").css("color", "#175CC4");
     }
   }
-  return mainRole;
-}
