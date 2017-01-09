@@ -59,7 +59,8 @@ body {
     padding-bottom: 4%; }
 
 .detailed-info {
-  margin-top: -5%; }
+  margin-top: -5%;
+  margin-bottom: 2.5%; }
   .detailed-info .most-played-icon {
     max-width: 50px;
     max-height: 50px; }

@@ -11,29 +11,42 @@ function setRegion(regionVal, selectorId) {
   $(selectorId).attr("value", regionVal);
 }
 
+var currSumm1;
+var currSumm2;
 var API_KEY = "RGAPI-217a0491-95a0-4107-9d45-93ac21a49b94";
 function summonerLookup(playerNum) {
   var SUMMONER_NAME = "";
   var REGION = "";
 
-  if (playerNum == 1) {
-    if ($("#player1Region").attr('value') === "") {
-      alert("Please pick a region.");
-      return;
-    }
-    SUMMONER_NAME = $("#player1Search").val();
-    REGION = $("#player1Region").attr('value');
-
-  } else if (playerNum == 2) {
-    if ($("#player2Region").attr('value') === "") {
-      alert("Please pick a region.");
-      return;
-    }
-    SUMMONER_NAME = $("#player2Search").val();
-    REGION = $("#player2Region").attr('value');
+  if ($("#player"+playerNum+"Region").attr('value') === "") {
+    alert("Please pick a region.");
+    return;
+  } else {
+    SUMMONER_NAME = $("#player"+playerNum+"Search").val();
+    REGION = $("#player"+playerNum+"Region").attr('value');
   }
+  // if (playerNum == 1) {
+  //   if ($("#player1Region").attr('value') === "") {
+  //     alert("Please pick a region.");
+  //     return;
+  //   }
+  //   SUMMONER_NAME = $("#player1Search").val();
+  //   REGION = $("#player1Region").attr('value');
+  //
+  // } else if (playerNum == 2) {
+  //   if ($("#player2Region").attr('value') === "") {
+  //     alert("Please pick a region.");
+  //     return;
+  //   }
+  //   SUMMONER_NAME = $("#player2Search").val();
+  //   REGION = $("#player2Region").attr('value');
+  // }
 
   if (SUMMONER_NAME !== "") {
+    var SUMMONER_NAME_NO_SPACE = SUMMONER_NAME.replace(' ','').toLowerCase().trim();
+  }
+
+  if (SUMMONER_NAME !== "" && (SUMMONER_NAME_NO_SPACE !== currSumm1 && SUMMONER_NAME_NO_SPACE !== currSumm2)) {
     $.ajax({
       url: 'https://na.api.pvp.net/api/lol/'+ REGION + '/v1.4/summoner/by-name/' + SUMMONER_NAME + '?api_key=' + API_KEY,
       type: 'GET',
@@ -41,9 +54,10 @@ function summonerLookup(playerNum) {
 
       },
       success: function (json) {
-        var SUMMONER_NAME_NO_SPACE = SUMMONER_NAME.replace(' ','');
-        SUMMONER_NAME_NO_SPACE = SUMMONER_NAME_NO_SPACE.toLowerCase().trim();
-
+        if (playerNum == 1)
+          currSumm1 = SUMMONER_NAME_NO_SPACE;
+        else
+          currSumm2 = SUMMONER_NAME_NO_SPACE;
         SUMMONER_NAME = json[SUMMONER_NAME_NO_SPACE].name;
         var summonerId = json[SUMMONER_NAME_NO_SPACE].id;
         var profileIconNum = json[SUMMONER_NAME_NO_SPACE].profileIconId;
@@ -59,10 +73,9 @@ function summonerLookup(playerNum) {
         alert("Error getting Summoner data !");
       }
     });
-  } else {}
+  } else { return;}
 }
 
-//Might be able to save API calls by saving in a plyer object
 function getSummonerRank(summonerId, playerNum, reg) {
   $.ajax({
     url: "https://na.api.pvp.net/api/lol/" + reg + "/v2.5/league/by-summoner/"+ summonerId +"/entry/" + '?api_key=' + API_KEY,
@@ -122,8 +135,10 @@ function getPlayerStats(summonerId, num, reg) {
       var data = json.champions;
       var totals;
       for (var key in data) {
-        if (data[key].id == 0)
-        totals = data[key];
+        if (data[key].id == 0) {
+          totals = data[key];
+          break;
+        }
       }
       totals = totals.stats;
       var favChampId = getFavoriteChampionId(data);
@@ -145,12 +160,14 @@ function getPlayerStats(summonerId, num, reg) {
       var avgCS = totalCS / totalGames;
       avgCS = avgCS.toFixed(2);
       setFavChampion(favChampId, num, reg);
+      setMostPlayedRole(summonerId, num, reg);
       document.getElementById('player'+num+'KDA').innerHTML = kda;
       document.getElementById('player'+num+'Kills').innerHTML = avgKills;
       document.getElementById('player'+num+'Deaths').innerHTML = avgDeaths;
       document.getElementById('player'+num+'Assists').innerHTML = avgAssists;
       document.getElementById('player'+num+'CS').innerHTML = avgCS;
       document.getElementById("player"+num+"MostPlayedWR").innerHTML = favChampWR;
+      compare();
     },
     error: function (XMLHttpRequest, textStatus, errorThrown) {
       document.getElementById('player'+num+'KDA').innerHTML = "n/a";
@@ -182,6 +199,7 @@ function getFavChampWinRate(data, favChampId) {
     if (data[key].id == favChampId) {
       totalWins = data[key].stats.totalSessionsWon;
       totalGames = data[key].stats.totalSessionsPlayed;
+      break;
     }
   }
   var winRate = (totalWins/totalGames*100).toFixed(2);
@@ -206,4 +224,58 @@ function setFavChampion(id, num, reg) {
       document.getElementById("player"+num+"MostPlayedChamp").innerHTML = "n/a";
     }
   });
+}
+
+function setMostPlayedRole(summId, num, reg) {
+  $.ajax({
+    url: "https://na.api.pvp.net/api/lol/"+reg+"/v2.2/matchlist/by-summoner/"+summId+"?rankedQueues=TEAM_BUILDER_RANKED_SOLO&api_key=" + API_KEY,
+    type: 'GET',
+    data: {
+
+    },
+    success: function(json) {
+      var main = getMostPlayedRole(json.matches);
+      document.getElementById("player"+num+"MostPlayedRole").innerHTML = main;
+    },
+    error: function (XMLHttpRequest, textStatus, errorThrown) {
+      document.getElementById("player"+num+"MostPlayedRole").innerHTML = "n/a";
+    }
+  });
+}
+
+function getMostPlayedRole(matches) {
+  var roleCount = {Top: 0, Mid: 0, Jungle: 0, ADC: 0, Support: 0};
+  var role;
+  for (var m in matches) {
+    role = matches[m].lane;
+    switch (role) {
+      case 'MID':
+        roleCount.Mid++;
+        break;
+      case 'TOP':
+        roleCount.Top++;
+        break;
+      case 'JUNGLE':
+        roleCount.Jungle++;
+        break;
+      case 'BOTTOM':
+        if (matches[m].role === "DUO_CARRY")
+          roleCount.ADC++;
+        else
+          roleCount.Support++;
+        break;
+      default:
+        break;
+    }
+  }
+
+  var maxGames = 0;
+  var mainRole;
+  for (var key in roleCount) {
+    if (roleCount[key] > maxGames) {
+      maxGames = roleCount[key];
+      mainRole = key;
+    }
+  }
+  return mainRole;
 }
