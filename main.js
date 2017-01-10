@@ -85,6 +85,10 @@ function resetTextColors() {
   $("#summoner2WinRatio").css("color", "black");
   $("#player1KDA").css("color", "black");
   $("#player2KDA").css("color", "black");
+  $("#player1Kills").css("color", "black");
+  $("#player2Kills").css("color", "black");
+  $("#player1Deaths").css("color", "black");
+  $("#player2Deaths").css("color", "black");
 }
 function getSummonerRank(summonerId, playerNum, reg) {
   $.ajax({
@@ -376,15 +380,93 @@ function getSummonerRank(summonerId, playerNum, reg) {
   function compareStats() {
     var player1KDA = $("#player1KDA").html().split(" ")[0];
     var player2KDA = $("#player2KDA").html().split(" ")[0];
+    var KDAdiff = Math.abs(player1KDA - player2KDA);
     console.log(player1KDA);
     if (parseFloat(player1KDA) > parseFloat(player2KDA)) {
       $("#player1KDA").css("color", "#175CC4");
+      $("#player1KDA").append(" <span style=\"font-size: 18px;\">(+ " + KDAdiff + ")</span>");
       $("#player2KDA").css("color", "red");
+      $("#player2KDA").prepend("<span style=\"font-size: 18px;\">(- " + KDAdiff + ")</span> ");
     } else if (parseFloat(player1KDA) < parseFloat(player2KDA)) {
       $("#player1KDA").css("color", "red");
+      $("#player1KDA").append(" <span style=\"font-size: 18px;\">(- " + KDAdiff + ")</span>");
       $("#player2KDA").css("color", "#175CC4");
+      $("#player2KDA").prepend("<span style=\"font-size: 18px;\">(+ " + KDAdiff + ")</span> ");
     } else {
       $("#player1KDA").css("color", "#175CC4");
       $("#player2KDA").css("color", "#175CC4");
+    }
+
+    var player1AvgKills = $("#player1Kills").html();
+    var player2AvgKills = $("#player2Kills").html();
+    var killDiff = Math.abs(player1AvgKills - player2AvgKills).toFixed(2);
+    console.log(player1AvgKills);
+    if (parseFloat(player1AvgKills) > parseFloat(player2AvgKills)) {
+      $("#player1Kills").css("color", "#175CC4");
+      $("#player1Kills").append(" <span style=\"font-size: 14px;\">(+ " + killDiff + ")</span>");
+      $("#player2Kills").css("color", "red");
+      $("#player2Kills").prepend("<span style=\"font-size: 14px;\">(- " + killDiff + ")</span> ");
+    } else if (parseFloat(player1AvgKills) < parseFloat(player2AvgKills)) {
+      $("#player1Kills").css("color", "red");
+      $("#player1Kills").append(" <span style=\"font-size: 14px;\">(- " + killDiff + ")</span>");
+      $("#player2Kills").css("color", "#175CC4");
+      $("#player2Kills").prepend("<span style=\"font-size: 14px;\">(+ " + killDiff + ")</span> ");
+    } else {
+      $("#player1Kills").css("color", "#175CC4");
+      $("#player2Kills").css("color", "#175CC4");
+    }
+
+    var player1AvgDeaths = $("#player1Deaths").html();
+    var player2AvgDeaths = $("#player2Deaths").html();
+    var deathDiff = Math.abs(player1AvgDeaths - player2AvgDeaths).toFixed(2);
+    if (parseFloat(player1AvgDeaths) < parseFloat(player2AvgDeaths)) {
+      $("#player1Deaths").css("color", "#175CC4");
+      $("#player1Deaths").append(" <span style=\"font-size: 14px;\">(- " + deathDiff + ")</span>");
+      $("#player2Deaths").css("color", "red");
+      $("#player2Deaths").prepend("<span style=\"font-size: 14px;\">(+ " + deathDiff + ")</span> ");
+    } else if (parseFloat(player1AvgDeaths) < parseFloat(player2AvgDeaths)) {
+      $("#player1Deaths").css("color", "red");
+      $("#player1Deaths").append(" <span style=\"font-size: 14px;\">(+ " + deathDiff + ")</span>");
+      $("#player2Deaths").css("color", "#175CC4");
+      $("#player2Deaths").prepend("<span style=\"font-size: 14px;\">(- " + deathDiff + ")</span> ");
+    } else {
+      $("#player1Deaths").css("color", "#175CC4");
+      $("#player2Deaths").css("color", "#175CC4");
+    }
+
+    var player1AvgAssists = $("#player1Assists").html();
+    var player2AvgAssists = $("#player2Assists").html();
+    var assistDiff = Math.abs(player1AvgAssists - player2AvgAssists).toFixed(2);
+    if (parseFloat(player1AvgAssists) > parseFloat(player2AvgAssists)) {
+      $("#player1Assists").css("color", "#175CC4");
+      $("#player1Assists").append(" <span style=\"font-size: 14px;\">(+ " + assistDiff + ")</span>");
+      $("#player2Assists").css("color", "red");
+      $("#player2Assists").prepend("<span style=\"font-size: 14px;\">(- " + assistDiff + ")</span> ");
+    } else if (parseFloat(player1AvgAssists) < parseFloat(player2AvgAssists)) {
+      $("#player1Assists").css("color", "red");
+      $("#player1Assists").append(" <span style=\"font-size: 14px;\">(- " + assistDiff + ")</span>");
+      $("#player2Assists").css("color", "#175CC4");
+      $("#player2Assists").prepend("<span style=\"font-size: 14px;\">(+ " + assistDiff + ")</span> ");
+    } else {
+      $("#player1Assists").css("color", "#175CC4");
+      $("#player2Assists").css("color", "#175CC4");
+    }
+
+    var player1AvgCS = $("#player1CS").html();
+    var player2AvgCS = $("#player2CS").html();
+    var CSDiff = Math.abs(player1AvgCS - player2AvgCS).toFixed(2);
+    if (parseFloat(player1AvgCS) > parseFloat(player2AvgCS)) {
+      $("#player1CS").css("color", "#175CC4");
+      $("#player1CS").append(" <span style=\"font-size: 14px;\">(+ " + CSDiff + ")</span>");
+      $("#player2CS").css("color", "red");
+      $("#player2CS").prepend("<span style=\"font-size: 14px;\">(- " + CSDiff + ") </span>");
+    } else if (parseFloat(player1AvgCS) < parseFloat(player2AvgCS)) {
+      $("#player1CS").css("color", "red");
+      $("#player1CS").append(" <span style=\"font-size: 14px;\">(- " + CSDiff + ")</span>");
+      $("#player2CS").css("color", "#175CC4");
+      $("#player2CS").prepend("<span style=\"font-size: 14px;\">(+ " + CSDiff + ") </span>");
+    } else {
+      $("#player1CS").css("color", "#175CC4");
+      $("#player2CS").css("color", "#175CC4");
     }
   }
