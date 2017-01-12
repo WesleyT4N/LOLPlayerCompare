@@ -46,7 +46,10 @@ function summonerLookup(playerNum) {
   if (SUMMONER_NAME !== "") {
     var SUMMONER_NAME_NO_SPACE = SUMMONER_NAME.replace(' ','').toLowerCase().trim();
   }
-
+  if (/[,!@#$%^&*()]/.test(SUMMONER_NAME)) {
+    alert("Invalid Summoner Name");
+    return;
+  }
   if (SUMMONER_NAME !== "" && (SUMMONER_NAME_NO_SPACE !== currSumm1 && SUMMONER_NAME_NO_SPACE !== currSumm2)) {
     $.ajax({
       url: 'https://na.api.pvp.net/api/lol/'+ REGION + '/v1.4/summoner/by-name/' + SUMMONER_NAME + '?api_key=' + API_KEY,
@@ -72,7 +75,7 @@ function summonerLookup(playerNum) {
         resetTextColors()
       },
       error: function (XMLHttpRequest, textStatus, errorThrown) {
-        alert("Error getting Summoner data !");
+        alert("Invalid Summoner Name");
       }
     });
   } else { return;}
@@ -380,7 +383,7 @@ function getSummonerRank(summonerId, playerNum, reg) {
   function compareStats() {
     var player1KDA = $("#player1KDA").html().split(" ")[0];
     var player2KDA = $("#player2KDA").html().split(" ")[0];
-    var KDAdiff = Math.abs(player1KDA - player2KDA);
+    var KDAdiff = Math.abs(player1KDA - player2KDA).toFixed(2);
     console.log(player1KDA);
     if (parseFloat(player1KDA) > parseFloat(player2KDA)) {
       $("#player1KDA").css("color", "#175CC4");
