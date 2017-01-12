@@ -7,6 +7,16 @@ $(function() {
   $("#compareDiv").hide();
 });
 
+function disableSearchButtons() {
+  $('#search1').prop("disabled", true);
+  $('#search2').prop("disabled", true);
+}
+
+function enableSearchButtons() {
+  $('#search1').prop("disabled", false);
+  $('#search2').prop("disabled", false);
+}
+
 function setRegion(regionVal, selectorId) {
   regionVal = $(regionVal).attr("value");
   $(selectorId).text(regionVal);
@@ -15,6 +25,7 @@ function setRegion(regionVal, selectorId) {
 }
 
 var API_KEY = "RGAPI-217a0491-95a0-4107-9d45-93ac21a49b94";
+
 function summonerLookup(playerNum) {
   var SUMMONER_NAME = "";
   var REGION = "";
@@ -26,22 +37,6 @@ function summonerLookup(playerNum) {
     SUMMONER_NAME = $("#player"+playerNum+"Search").val();
     REGION = $("#player"+playerNum+"Region").attr('value');
   }
-  // if (playerNum == 1) {
-  //   if ($("#player1Region").attr('value') === "") {
-  //     alert("Please pick a region.");
-  //     return;
-  //   }
-  //   SUMMONER_NAME = $("#player1Search").val();
-  //   REGION = $("#player1Region").attr('value');
-  //
-  // } else if (playerNum == 2) {
-  //   if ($("#player2Region").attr('value') === "") {
-  //     alert("Please pick a region.");
-  //     return;
-  //   }
-  //   SUMMONER_NAME = $("#player2Search").val();
-  //   REGION = $("#player2Region").attr('value');
-  // }
 
   if (SUMMONER_NAME !== "") {
     var SUMMONER_NAME_NO_SPACE = SUMMONER_NAME.replace(' ','').toLowerCase().trim();
@@ -50,6 +45,7 @@ function summonerLookup(playerNum) {
     alert("Invalid Summoner Name");
     return;
   }
+
   if (SUMMONER_NAME !== "" && (SUMMONER_NAME_NO_SPACE !== currSumm1 && SUMMONER_NAME_NO_SPACE !== currSumm2)) {
     $.ajax({
       url: 'https://na.api.pvp.net/api/lol/'+ REGION + '/v1.4/summoner/by-name/' + SUMMONER_NAME + '?api_key=' + API_KEY,
@@ -73,9 +69,16 @@ function summonerLookup(playerNum) {
         $('.hr-'+playerNum+'-2').hide();
         $('#player'+playerNum+'DetailedInfo').hide();
         resetTextColors()
+        $('#compare').prop("disabled", false);
       },
       error: function (XMLHttpRequest, textStatus, errorThrown) {
-        alert("Invalid Summoner Name");
+        if (errorThrown === "Too Many Requests") {
+          alert("Too may requests please wait 10 seconds");
+          disableSearchButtons();
+          setTimeout(enableSearchButtons, 10000);
+        } else {
+          alert("Invalid Summoner Name");
+        }
       }
     });
   } else { return;}
@@ -87,12 +90,27 @@ function resetTextColors() {
   $("#summoner1WinRatio").css("color", "black");
   $("#summoner2WinRatio").css("color", "black");
   $("#player1KDA").css("color", "black");
+  $("#player1KDA").html($("#player1KDA").html().split(" <")[0]);
   $("#player2KDA").css("color", "black");
+  $("#player2KDA").html($("#player2KDA").html().split("</span> ")[1]);
   $("#player1Kills").css("color", "black");
+  $("#player1Kills").html($("#player1Kills").html().split(" ")[0]);
   $("#player2Kills").css("color", "black");
+  $("#player2Kills").html($("#player2Kills").html().split(" ")[4]);
   $("#player1Deaths").css("color", "black");
+  $("#player1Deaths").html($("#player1Deaths").html().split(" ")[0]);
   $("#player2Deaths").css("color", "black");
+  $("#player2Deaths").html($("#player2Deaths").html().split(" ")[4]);
+  $("#player1Assists").css("color", "black");
+  $("#player1Assists").html($("#player1Assists").html().split(" ")[0]);
+  $("#player2Assists").css("color", "black");
+  $("#player2Assists").html($("#player2Assists").html().split(" ")[4]);
+  $("#player1CS").css("color", "black");
+  $("#player1CS").html($("#player1CS").html().split(" ")[0]);
+  $("#player2CS").css("color", "black");
+  $("#player2CS").html($("#player2CS").html().split(" ")[4]);
 }
+
 function getSummonerRank(summonerId, playerNum, reg) {
   $.ajax({
     url: "https://na.api.pvp.net/api/lol/" + reg + "/v2.5/league/by-summoner/"+ summonerId +"/entry/" + '?api_key=' + API_KEY,
@@ -141,6 +159,10 @@ function getSummonerRank(summonerId, playerNum, reg) {
           document.getElementById("player"+playerNum+"MostPlayedChamp").innerHTML = "n/a";
           $("#player"+playerNum+"MostPlayedIcon").hide();
           document.getElementById("player"+playerNum+"MostPlayedRole").innerHTML = "n/a";
+        } else if (errorThrown === "Too Many Requests") {
+          alert("Too may requests please wait 10 seconds");
+          disableSearchButtons();
+          setTimeout(enableSearchButtons, 10000);
         }
       }
     });
@@ -178,7 +200,7 @@ function getSummonerRank(summonerId, playerNum, reg) {
         var totalKills = totals.totalChampionKills;
         var totalDeaths = totals.totalDeathsPerSession;
         var totalAssists = totals.totalAssists;
-        var totalCS = totals.totalMinionKills + totals.totalNeutralMinionsKilled;
+        var totalCS = totals.totalMinionKills;
         var totalGames = totals.totalSessionsPlayed;
         var kda = (totalKills + totalAssists) / totalDeaths;
         kda = kda.toFixed(2) + " : 1";
@@ -202,6 +224,7 @@ function getSummonerRank(summonerId, playerNum, reg) {
         document.getElementById("player"+num+"MostPlayedWR").innerHTML = favChampWR;
       },
       error: function (XMLHttpRequest, textStatus, errorThrown) {
+
         document.getElementById('player'+num+'KDA').innerHTML = "n/a";
         document.getElementById('player'+num+'Kills').innerHTML = "n/a";
         document.getElementById('player'+num+'Deaths').innerHTML = "n/a";
@@ -210,6 +233,11 @@ function getSummonerRank(summonerId, playerNum, reg) {
         document.getElementById("player"+num+"MostPlayedChamp").innerHTML = "n/a";
         $("#player"+num+"MostPlayedIcon").hide();
         document.getElementById("player"+num+"MostPlayedRole").innerHTML = "n/a";
+        if (errorThrown === "Too Many Requests") {
+          alert("Too may requests please wait 10 seconds");
+          disableSearchButtons();
+          setTimeout(enableSearchButtons, 10000);
+        }
       }
     });
   }
@@ -257,6 +285,11 @@ function getSummonerRank(summonerId, playerNum, reg) {
       },
       error: function (XMLHttpRequest, textStatus, errorThrown) {
         document.getElementById("player"+num+"MostPlayedChamp").innerHTML = "n/a";
+        if (errorThrown === "Too Many Requests") {
+          alert("Too may requests please wait 10 seconds");
+          disableSearchButtons();
+          setTimeout(enableSearchButtons, 10000);
+        }
       }
     });
   }
@@ -274,10 +307,14 @@ function getSummonerRank(summonerId, playerNum, reg) {
       },
       error: function (XMLHttpRequest, textStatus, errorThrown) {
         document.getElementById("player"+num+"MostPlayedRole").innerHTML = "n/a";
+        if (errorThrown === "Too Many Requests") {
+          alert("Too may requests please wait 10 seconds");
+          disableSearchButtons();
+          setTimeout(enableSearchButtons, 10000);
+        }
       }
     });
   }
-
   function getMostPlayedRole(matches) {
     var roleCount = {Top: 0, Mid: 0, Jungle: 0, ADC: 0, Support: 0};
     var role;
@@ -318,6 +355,7 @@ function getSummonerRank(summonerId, playerNum, reg) {
   function compare() {
     compareRank();
     compareStats();
+    $('#compare').prop("disabled", true);
   }
 
   function compareRank() {
@@ -384,7 +422,6 @@ function getSummonerRank(summonerId, playerNum, reg) {
     var player1KDA = $("#player1KDA").html().split(" ")[0];
     var player2KDA = $("#player2KDA").html().split(" ")[0];
     var KDAdiff = Math.abs(player1KDA - player2KDA).toFixed(2);
-    console.log(player1KDA);
     if (parseFloat(player1KDA) > parseFloat(player2KDA)) {
       $("#player1KDA").css("color", "#175CC4");
       $("#player1KDA").append(" <span style=\"font-size: 18px;\">(+ " + KDAdiff + ")</span>");
@@ -403,7 +440,6 @@ function getSummonerRank(summonerId, playerNum, reg) {
     var player1AvgKills = $("#player1Kills").html();
     var player2AvgKills = $("#player2Kills").html();
     var killDiff = Math.abs(player1AvgKills - player2AvgKills).toFixed(2);
-    console.log(player1AvgKills);
     if (parseFloat(player1AvgKills) > parseFloat(player2AvgKills)) {
       $("#player1Kills").css("color", "#175CC4");
       $("#player1Kills").append(" <span style=\"font-size: 14px;\">(+ " + killDiff + ")</span>");
@@ -427,7 +463,7 @@ function getSummonerRank(summonerId, playerNum, reg) {
       $("#player1Deaths").append(" <span style=\"font-size: 14px;\">(- " + deathDiff + ")</span>");
       $("#player2Deaths").css("color", "red");
       $("#player2Deaths").prepend("<span style=\"font-size: 14px;\">(+ " + deathDiff + ")</span> ");
-    } else if (parseFloat(player1AvgDeaths) < parseFloat(player2AvgDeaths)) {
+    } else if (parseFloat(player1AvgDeaths) > parseFloat(player2AvgDeaths)) {
       $("#player1Deaths").css("color", "red");
       $("#player1Deaths").append(" <span style=\"font-size: 14px;\">(+ " + deathDiff + ")</span>");
       $("#player2Deaths").css("color", "#175CC4");
