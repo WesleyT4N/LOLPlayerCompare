@@ -74,8 +74,8 @@ function summonerLookup(playerNum) {
         getSummonerRank(summonerId, playerNum, REGION);
         $('#player'+playerNum+'MainInfo').css("visibility", "hidden");
         $('#player'+playerNum+'MainInfo').slideDown();
-        $('.hr-'+playerNum+'-2').hide();
-        $('#player'+playerNum+'DetailedInfo').hide();
+        $('#player1DetailedInfo').slideUp();
+        $('#player2DetailedInfo').slideUp();
         resetTextColors();
         $('#compare').prop("disabled", false);
         $('#player'+playerNum+'MainInfo').css("visibility", "visible");
@@ -143,6 +143,7 @@ function getSummonerRank(summonerId, playerNum, reg) {
       winRate = winRate.toFixed(2);
       var rankedIconLocation = setRankedIcon(tier, division);
       $('.hr-'+playerNum+'-1').show();
+      $('.hr-'+playerNum+'-2').show();
       getPlayerStats(summonerId, playerNum, reg);
       document.getElementById('summoner' + playerNum + 'Rank').innerHTML = tier + " " + division + " - " + lp + " LP";
       document.getElementById('summoner' + playerNum + 'WinRatio').innerHTML = winRate + "% " +
