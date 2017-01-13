@@ -4,7 +4,7 @@ $(function() {
   $(".main-info").hide();
   $(".detailed-info").hide();
   $("hr").hide();
-  $("#compareDiv").hide();
+  $('#compare').prop("disabled", true);
 });
 
 function newSearch(playerNum) {
@@ -77,7 +77,6 @@ function summonerLookup(playerNum) {
         $('#player1DetailedInfo').slideUp();
         $('#player2DetailedInfo').slideUp();
         resetTextColors();
-        $('#compare').prop("disabled", false);
         $('#player'+playerNum+'MainInfo').css("visibility", "visible");
       },
       error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -151,12 +150,12 @@ function getSummonerRank(summonerId, playerNum, reg) {
       document.getElementById('summoner' + playerNum +'RankIcon').setAttribute("src", rankedIconLocation);
       if (currSumm1 !== undefined && currSumm2 !== undefined &&
         $("#summoner1Rank").html() !== "Unranked" && $("#summoner2Rank").html() !== "Unranked") {
-          $("#compareDiv").slideDown("fast", "swing");
+          $('#compare').prop("disabled", false);
         }
       },
       error: function (XMLHttpRequest, textStatus, errorThrown) {
         if (errorThrown === "Not Found") {
-          $("#compareDiv").slideUp("fast", "swing");
+          $('#compare').prop("disabled", true);
           $('.hr-'+playerNum+'-1').show();
           document.getElementById('summoner' + playerNum + 'Rank').innerHTML = "Unranked";
           document.getElementById('summoner' + playerNum + 'WinRatio').innerHTML = "n/a";
