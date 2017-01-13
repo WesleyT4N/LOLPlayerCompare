@@ -7,6 +7,13 @@ $(function() {
   $("#compareDiv").hide();
 });
 
+function newSearch(playerNum) {
+  $('#player'+playerNum+'MainInfo').slideUp();
+  $('#player'+playerNum+'DetailedInfo').slideUp();
+  $('.hr-'+playerNum+'-1').slideUp();
+  $('.hr-'+playerNum+'-2').slideUp();
+}
+
 function disableSearchButtons() {
   $('#search1').prop("disabled", true);
   $('#search2').prop("disabled", true);
@@ -55,9 +62,9 @@ function summonerLookup(playerNum) {
       },
       success: function (json) {
         if (playerNum == 1)
-        currSumm1 = SUMMONER_NAME_NO_SPACE;
+          currSumm1 = SUMMONER_NAME_NO_SPACE;
         else
-        currSumm2 = SUMMONER_NAME_NO_SPACE;
+          currSumm2 = SUMMONER_NAME_NO_SPACE;
         SUMMONER_NAME = json[SUMMONER_NAME_NO_SPACE].name;
         var summonerId = json[SUMMONER_NAME_NO_SPACE].id;
         var profileIconNum = json[SUMMONER_NAME_NO_SPACE].profileIconId;
@@ -65,11 +72,13 @@ function summonerLookup(playerNum) {
         "http://ddragon.leagueoflegends.com/cdn/6.24.1/img/profileicon/"+ profileIconNum+ ".png");
         document.getElementById('summonerName' + playerNum).innerHTML = SUMMONER_NAME;
         getSummonerRank(summonerId, playerNum, REGION);
-        $('#player'+playerNum+'MainInfo').show();
+        $('#player'+playerNum+'MainInfo').css("visibility", "hidden");
+        $('#player'+playerNum+'MainInfo').slideDown();
         $('.hr-'+playerNum+'-2').hide();
         $('#player'+playerNum+'DetailedInfo').hide();
-        resetTextColors()
+        resetTextColors();
         $('#compare').prop("disabled", false);
+        $('#player'+playerNum+'MainInfo').css("visibility", "visible");
       },
       error: function (XMLHttpRequest, textStatus, errorThrown) {
         if (errorThrown === "Too Many Requests") {
@@ -133,23 +142,23 @@ function getSummonerRank(summonerId, playerNum, reg) {
       var winRate = wins / (wins + losses) * 100;
       winRate = winRate.toFixed(2);
       var rankedIconLocation = setRankedIcon(tier, division);
-      getPlayerStats(summonerId, playerNum, reg);
       $('.hr-'+playerNum+'-1').show();
+      getPlayerStats(summonerId, playerNum, reg);
       document.getElementById('summoner' + playerNum + 'Rank').innerHTML = tier + " " + division + " - " + lp + " LP";
       document.getElementById('summoner' + playerNum + 'WinRatio').innerHTML = winRate + "% " +
       "<br/>(" + wins + "W " + losses + "L)" ;
       document.getElementById('summoner' + playerNum +'RankIcon').setAttribute("src", rankedIconLocation);
       if (currSumm1 !== undefined && currSumm2 !== undefined &&
         $("#summoner1Rank").html() !== "Unranked" && $("#summoner2Rank").html() !== "Unranked") {
-          $("#compareDiv").show();
+          $("#compareDiv").slideDown("fast", "swing");
         }
       },
       error: function (XMLHttpRequest, textStatus, errorThrown) {
         if (errorThrown === "Not Found") {
-          $("#compareDiv").hide();
+          $("#compareDiv").slideUp("fast", "swing");
           $('.hr-'+playerNum+'-1').show();
           document.getElementById('summoner' + playerNum + 'Rank').innerHTML = "Unranked";
-          document.getElementById('summoner' + playerNum + 'WinRatio').innerHTML = "Win Ratio: n/a ";
+          document.getElementById('summoner' + playerNum + 'WinRatio').innerHTML = "n/a";
           document.getElementById('summoner' + playerNum +'RankIcon').setAttribute("src", "./base_icons/provisional.png");
           document.getElementById('player'+playerNum+'KDA').innerHTML = "n/a";
           document.getElementById('player'+playerNum+'Kills').innerHTML = "n/a";
@@ -359,10 +368,14 @@ function getSummonerRank(summonerId, playerNum, reg) {
   }
 
   function compareRank() {
+    $('.hr-1-1').slideDown();
+    $('.hr-2-1').slideDown();
+    $('#player1MainInfo').slideDown();
+    $('#player2MainInfo').slideDown();
     $('.hr-1-2').show();
     $('.hr-2-2').show();
-    $('#player1DetailedInfo').show();
-    $('#player2DetailedInfo').show();
+    $('#player1DetailedInfo').slideDown();
+    $('#player2DetailedInfo').slideDown();
     var tierValues = {
       Bronze: 0, Silver: 1, Gold: 2, Platinum: 3, Diamond: 4, Master: 5, Challenger: 6
     }

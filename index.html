@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
   <link href="https://fonts.googleapis.com/css?family=Armata" rel="stylesheet">
-  <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
+  <script src="https://use.fontawesome.com/7b04bb0313.js"></script>
   <link rel="stylesheet" href="main.nested.css">
   <script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA=" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
@@ -37,7 +37,7 @@
               <li id="kr1" value="KR"><a href="#" onclick="setRegion(kr1, player1Region)">KR</a></li>
             </ul>
           </div>
-          <input id="player1Search" class="search-box form-control" type="text" placeholder="Summoner 1"/>
+          <input id="player1Search" class="search-box form-control" type="text" placeholder="Summoner 1" oninput="newSearch(1)"/>
           <div class="input-group-btn">
             <button class="btn btn-default" onclick="summonerLookup(1)" id="search1"><i class="fa fa-search" aria-hidden="true"></i></button>
           </div>
@@ -71,7 +71,7 @@
                 <span id="player1MostPlayedWR" class="most-played-winrate">--.-%</span>
               </h4>
               <h3 class="text-center">Main Role:
-                <span id="player1MostPlayedRole" class="most-played-role"></span>
+                <span id="player1MostPlayedRole" class="most-played-role" style="font-size: 20px;"></span>
               </h3>
             </div>
             <div id="player1Numerics" class="col-md-6 numerical-info">
@@ -101,7 +101,7 @@
                   <li id="kr2" value="KR"><a hre="#" onclick="setRegion(kr2, player2Region)">KR</a></li>
                 </ul>
               </div>
-              <input id="player2Search" class="search-box form-control" type="text" placeholder="Summoner 2" />
+              <input id="player2Search" class="search-box form-control" type="text" placeholder="Summoner 2" oninput="newSearch(2)" />
               <div class="input-group-btn">
                 <button class="btn btn-default" id="search2" onclick="summonerLookup(2)"><i class="fa fa-search" aria-hidden="true"></i></button>
               </div>
@@ -156,7 +156,7 @@
                     <span id="player2MostPlayedWR" class="most-played-winrate">--.-%</span>
                   </h4>
                   <h3 class="text-center">Main Role:
-                    <span id="player2MostPlayedRole"class="most-played-role"></span>
+                    <span id="player2MostPlayedRole"class="most-played-role" style="font-size: 20px;"></span>
                   </h3>
                 </div>
               </div>
