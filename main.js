@@ -69,7 +69,7 @@ function summonerLookup(playerNum) {
         var summonerId = json[SUMMONER_NAME_NO_SPACE].id;
         var profileIconNum = json[SUMMONER_NAME_NO_SPACE].profileIconId;
         document.getElementById('player' + playerNum + 'ProfileIcon').setAttribute("src",
-        "http://ddragon.leagueoflegends.com/cdn/6.24.1/img/profileicon/"+ profileIconNum+ ".png");
+        "https://ddragon.leagueoflegends.com/cdn/6.24.1/img/profileicon/"+ profileIconNum+ ".png");
         document.getElementById('summonerName' + playerNum).innerHTML = SUMMONER_NAME;
         getSummonerRank(summonerId, playerNum, REGION);
         $('#player'+playerNum+'MainInfo').css("visibility", "hidden");
@@ -288,7 +288,7 @@ function getSummonerRank(summonerId, playerNum, reg) {
       success: function(json) {
         var champName = json.name;
         var champImgName = json.image.full;
-        var iconURL = "http://ddragon.leagueoflegends.com/cdn/6.24.1/img/champion/" + champImgName;
+        var iconURL = "https://ddragon.leagueoflegends.com/cdn/6.24.1/img/champion/" + champImgName;
         document.getElementById("player"+num+"MostPlayedChamp").innerHTML = champName;
         document.getElementById("player"+num+"MostPlayedIcon").setAttribute("src", iconURL);
       },
