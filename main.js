@@ -69,7 +69,7 @@ function summonerLookup(playerNum) {
             var summonerId = summoner.id;
             var profileIconNum = summoner.icon;
             REGION = summoner.region;
-            $('#player' + playerNum + 'ProfileIcon').attr("src", "http://ddragon.leagueoflegends.com/cdn/6.24.1/img/profileicon/" + profileIconNum + ".png");
+            $('#player' + playerNum + 'ProfileIcon').attr("src", "https://ddragon.leagueoflegends.com/cdn/6.24.1/img/profileicon/" + profileIconNum + ".png");
             $('#summonerName' + playerNum).html(SUMMONER_NAME);
             console.log("calling using local storage");
             getSummonerRank(SUMMONER_NAME_NO_SPACE, summonerId, playerNum, REGION);
@@ -89,7 +89,7 @@ function summonerLookup(playerNum) {
                     SUMMONER_NAME = json[SUMMONER_NAME_NO_SPACE].name;
                     var summonerId = json[SUMMONER_NAME_NO_SPACE].id;
                     var profileIconNum = json[SUMMONER_NAME_NO_SPACE].profileIconId;
-                    $('#player' + playerNum + 'ProfileIcon').attr("src", "http://ddragon.leagueoflegends.com/cdn/6.24.1/img/profileicon/" + profileIconNum + ".png");
+                    $('#player' + playerNum + 'ProfileIcon').attr("src", "https://ddragon.leagueoflegends.com/cdn/6.24.1/img/profileicon/" + profileIconNum + ".png");
                     $('#summonerName' + playerNum).html(SUMMONER_NAME);
                     var date = new Date();
                     var summoner = {
@@ -401,7 +401,7 @@ function setFavChampion(name, id, num, reg) {
             success: function(json) {
                 var champName = json.name;
                 var champImgName = json.image.full;
-                var iconURL = "http://ddragon.leagueoflegends.com/cdn/6.24.1/img/champion/" + champImgName;
+                var iconURL = "https://ddragon.leagueoflegends.com/cdn/6.24.1/img/champion/" + champImgName;
                 var summoner = getSummoner(name);
                 summoner.champName = champName;
                 summoner.iconURL = iconURL;
