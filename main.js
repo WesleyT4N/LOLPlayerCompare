@@ -1,6 +1,5 @@
 var currSumm1 = undefined;
 var currSumm2 = undefined;
-var API_KEY = "RGAPI-217a0491-95a0-4107-9d45-93ac21a49b94";
 var currDate = new Date();
 var ONE_DAY = 24 * 60 * 60 * 1000;
 
@@ -56,7 +55,6 @@ function summonerLookup(playerNum) {
     }
 
     if (SUMMONER_NAME !== "" && (SUMMONER_NAME_NO_SPACE !== currSumm1 && SUMMONER_NAME_NO_SPACE !== currSumm2)) {
-
         if (getSummoner(SUMMONER_NAME_NO_SPACE) != null &&
             currDate.getTime() - getSummoner(SUMMONER_NAME_NO_SPACE).lastVisit < ONE_DAY) {
             var summoner = getSummoner(SUMMONER_NAME_NO_SPACE);
@@ -71,17 +69,24 @@ function summonerLookup(playerNum) {
             REGION = summoner.region;
             $('#player' + playerNum + 'ProfileIcon').attr("src", "https://ddragon.leagueoflegends.com/cdn/6.24.1/img/profileicon/" + profileIconNum + ".png");
             $('#summonerName' + playerNum).html(SUMMONER_NAME);
-            console.log("calling using local storage");
+            // console.log("calling using local storage");
             getSummonerRank(SUMMONER_NAME_NO_SPACE, summonerId, playerNum, REGION);
             resetTextColors();
         } else {
             $.ajax({
-                url: 'https://' + REGION + '.api.pvp.net/api/lol/' + REGION + '/v1.4/summoner/by-name/' + SUMMONER_NAME + '?api_key=' + API_KEY,
-                type: 'GET',
+                type: "POST",
+                url: "apiCall.php",
+                dataType: "json",
                 data: {
-
+                    'url': 'https://' + REGION + '.api.pvp.net/api/lol/' + REGION + '/v1.4/summoner/by-name/' + SUMMONER_NAME_NO_SPACE + '?api_key='
                 },
                 success: function(json) {
+                    // console.log("php received");
+                    // console.log(json);
+                    if (json.status !== undefined) {
+                        searchError(json)
+                        return;
+                    }
                     if (playerNum == 1)
                         currSumm1 = SUMMONER_NAME_NO_SPACE;
                     else
@@ -105,13 +110,7 @@ function summonerLookup(playerNum) {
                     resetTextColors();
                 },
                 error: function(XMLHttpRequest, textStatus, errorThrown) {
-                    if (errorThrown === "Too Many Requests") {
-                        alert("Too may requests please wait 10 seconds");
-                        disableSearchButtons();
-                        setTimeout(enableSearchButtons, 10000);
-                    } else {
-                        alert("Invalid Summoner Name");
-                    }
+                    alert("Something went wrong when accessing server.");
                 }
             });
         }
@@ -119,6 +118,27 @@ function summonerLookup(playerNum) {
         return;
     }
 }
+
+function searchError(data) {
+    if (data.status.status_code == 404)
+        notFound();
+    else if (data.status.status_code == 429)
+        tooManyRequests();
+    return;
+}
+
+
+function tooManyRequests() {
+    alert("Too may requests please wait 10 seconds");
+    disableSearchButtons();
+    setTimeout(enableSearchButtons, 10000);
+}
+
+function notFound() {
+    alert("Info Not Found");
+}
+
+
 
 function storeSummoner(key, value) {
     if (typeof value === "object")
@@ -168,7 +188,7 @@ function getSummonerRank(name, summonerId, playerNum, reg) {
     $('#player' + playerNum + 'DetailedInfo').hide();
 
     if (currDate.getTime() - getSummoner(name).lastVisit < ONE_DAY && getSummoner(name).tier !== undefined) {
-        console.log("getting ranked data from storage");
+        // console.log("getting ranked data from storage");
         var summoner = getSummoner(name);
         var tier = summoner.tier;
         var division = summoner.division;
@@ -187,12 +207,18 @@ function getSummonerRank(name, summonerId, playerNum, reg) {
         getPlayerStats(name, summonerId, playerNum, reg);
     } else {
         $.ajax({
-            url: "https://" + reg + ".api.pvp.net/api/lol/" + reg + "/v2.5/league/by-summoner/" + summonerId + "/entry/" + '?api_key=' + API_KEY,
-            type: 'GET',
+            type: "POST",
+            url: "apiCall.php",
+            dataType: "json",
             data: {
-
+                'url': "https://" + reg + ".api.pvp.net/api/lol/" + reg + "/v2.5/league/by-summoner/" + summonerId + "/entry/" + "?api_key="
             },
             success: function(json) {
+                // console.log(json);
+                if (json.status !== undefined) {
+                    rankedError(playerNum, json);
+                    return;
+                }
                 var tier = json[summonerId][0].tier;
                 tier = tier.toLowerCase().split('')
                 tier[0] = tier[0].toUpperCase();
@@ -216,7 +242,7 @@ function getSummonerRank(name, summonerId, playerNum, reg) {
                 summoner.winRate = winRate;
                 summoner.rankedIcon = rankedIconLocation;
                 storeSummoner(name, summoner);
-                console.log("stored");
+                // console.log("stored");
                 $('#summoner' + playerNum + 'Rank').html(tier + " " + division + " - " + lp + " LP");
                 $('#summoner' + playerNum + 'WinRatio').html(winRate + "% " + "<br/>(" + wins + "W " + losses + "L)");
                 $('#summoner' + playerNum + 'RankIcon').attr("src", rankedIconLocation);
@@ -227,28 +253,20 @@ function getSummonerRank(name, summonerId, playerNum, reg) {
                 getPlayerStats(name, summonerId, playerNum, reg);
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
-                if (errorThrown === "Not Found") {
-                    $('#compare').prop("disabled", true);
-                    $('.hr-' + playerNum + '-1').show();
-                    $('#summoner' + playerNum + 'Rank').html("Unranked");
-                    $('#summoner' + playerNum + 'WinRatio').html("n/a");
-                    $('#summoner' + playerNum + 'RankIcon').attr("src", "./base_icons/provisional.png");
-                    $('#player' + playerNum + 'KDA').html("n/a");
-                    $('#player' + playerNum + 'Kills').html("n/a");
-                    $('#player' + playerNum + 'Deaths').html("n/a");
-                    $('#player' + playerNum + 'Assists').html("n/a");
-                    $('#player' + playerNum + 'CS').html("n/a");
-                    $("#player" + playerNum + "MostPlayedChamp").html("n/a");
-                    $("#player" + playerNum + "MostPlayedIcon").hide();
-                    $("#player" + playerNum + "MostPlayedRole").html("n/a");
-                } else if (errorThrown === "Too Many Requests") {
-                    alert("Too may requests please wait 10 seconds");
-                    disableSearchButtons();
-                    setTimeout(enableSearchButtons, 10000);
-                }
+                alert("Something went wrong when accessing php server.");
             }
         });
     }
+}
+
+function rankedError(playerNum, data) {
+    $('#compare').prop("disabled", true);
+    $('.hr-' + playerNum + '-1').show();
+    $('#summoner' + playerNum + 'Rank').html("Unranked");
+    $('#summoner' + playerNum + 'WinRatio').html("n/a");
+    $('#summoner' + playerNum + 'RankIcon').attr("src", "./base_icons/provisional.png");
+    if (data.status.status_code == 429)
+        tooManyRequests();
 }
 
 function setRankedIcon(tier, division) {
@@ -264,7 +282,7 @@ function setRankedIcon(tier, division) {
 function getPlayerStats(name, summonerId, num, reg) {
     $('.hr-' + num + '-1').show();
     if (currDate.getTime() - getSummoner(name).lastVisit < ONE_DAY && getSummoner(name).kda !== undefined) {
-        console.log("Getting player data from storage");
+        // console.log("Getting player data from storage");
         var summoner = getSummoner(name);
         var favChampId = summoner.favChampId;
         var favChampWR = summoner.favChampWR;
@@ -283,12 +301,18 @@ function getPlayerStats(name, summonerId, num, reg) {
         $("#player" + num + "MostPlayedWR").html(favChampWR);
     } else {
         $.ajax({
-            url: "https://" + reg + ".api.pvp.net/api/lol/" + reg + "/v1.3/stats/by-summoner/" + summonerId + "/ranked?api_key=" + API_KEY,
-            type: 'GET',
+            type: "POST",
+            url: "apiCall.php",
+            dataType: "json",
             data: {
-
+                'url': "https://" + reg + ".api.pvp.net/api/lol/" + reg + "/v1.3/stats/by-summoner/" + summonerId + "/ranked?api_key="
             },
             success: function(json) {
+                // console.log(json);
+                if (json.status !== undefined) {
+                    statsError(num, json);
+                    return;
+                }
                 var data = json.champions;
                 var totals;
                 for (var key in data) {
@@ -317,7 +341,7 @@ function getPlayerStats(name, summonerId, num, reg) {
                 var avgCS = totalCS / totalGames;
                 avgCS = avgCS.toFixed(2);
                 var summoner = getSummoner(name);
-                console.log("storing new player stats");
+                // console.log("storing new player stats");
                 summoner.favChampId = favChampId;
                 summoner.favChampWR = favChampWR;
                 summoner.kda = kda;
@@ -336,22 +360,23 @@ function getPlayerStats(name, summonerId, num, reg) {
                 $("#player" + num + "MostPlayedWR").html(favChampWR);
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
-                $('#player' + num + 'KDA').html("n/a");
-                $('#player' + num + 'Kills').html("n/a");
-                $('#player' + num + 'Deaths').html("n/a");
-                $('#player' + num + 'Assists').html("n/a");
-                $('#player' + num + 'CS').html("n/a");
-                $("#player" + num + "MostPlayedWR").html("n/a");
-                $("#player" + num + "MostPlayedIcon").hide();
-                $("#player" + num + "MostPlayedRole").html("n/a");
-                if (errorThrown === "Too Many Requests") {
-                    alert("Too may requests please wait 10 seconds");
-                    disableSearchButtons();
-                    setTimeout(enableSearchButtons, 10000);
-                }
+                alert("Something went wrong when accessing php server");
             }
         });
     }
+}
+
+function statsError(num, data) {
+    $('#player' + num + 'KDA').html("n/a");
+    $('#player' + num + 'Kills').html("n/a");
+    $('#player' + num + 'Deaths').html("n/a");
+    $('#player' + num + 'Assists').html("n/a");
+    $('#player' + num + 'CS').html("n/a");
+    $("#player" + num + "MostPlayedWR").html("n/a");
+    $("#player" + num + "MostPlayedIcon").hide();
+    $("#player" + num + "MostPlayedRole").html("n/a");
+    if (data.status.status_code == 429)
+        tooManyRequests();
 }
 
 function getFavoriteChampionId(data) {
@@ -384,7 +409,7 @@ function getFavChampWinRate(data, favChampId) {
 function setFavChampion(name, id, num, reg) {
 
     if (currDate.getTime() - getSummoner(name).lastVisit < ONE_DAY && getSummoner(name).champName !== undefined) {
-        console.log("getting favorite champion from storage");
+        // console.log("getting favorite champion from storage");
         var summoner = getSummoner(name);
         var champName = summoner.champName;
         var iconURL = summoner.iconURL;
@@ -393,12 +418,18 @@ function setFavChampion(name, id, num, reg) {
         $("#player" + num + "MostPlayedIcon").show();
     } else {
         $.ajax({
-            url: "https://global.api.pvp.net/api/lol/static-data/" + reg + "/v1.2/champion/" + id + "?champData=image&api_key=" + API_KEY,
-            type: 'GET',
+            type: "POST",
+            url: "apiCall.php",
+            dataType: "json",
             data: {
-
+                'url': "https://global.api.pvp.net/api/lol/static-data/" + reg + "/v1.2/champion/" + id + "?champData=image&api_key="
             },
             success: function(json) {
+                // console.log(json);
+                if (json.status !== undefined) {
+                    favChampError(num, json);
+                    return;
+                }
                 var champName = json.name;
                 var champImgName = json.image.full;
                 var iconURL = "https://ddragon.leagueoflegends.com/cdn/6.24.1/img/champion/" + champImgName;
@@ -406,54 +437,62 @@ function setFavChampion(name, id, num, reg) {
                 summoner.champName = champName;
                 summoner.iconURL = iconURL;
                 storeSummoner(name, summoner);
-                console.log("storing favorite champion");
+                // console.log("storing favorite champion");
                 $("#player" + num + "MostPlayedChamp").html(champName);
                 $("#player" + num + "MostPlayedIcon").attr("src", iconURL);
                 $("#player" + num + "MostPlayedIcon").show();
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
-                $("#player" + num + "MostPlayedChamp").html("n/a");
-                if (errorThrown === "Too Many Requests") {
-                    alert("Too may requests please wait 10 seconds");
-                    disableSearchButtons();
-                    setTimeout(enableSearchButtons, 10000);
-                }
+                alert("Something went wrong when accessing php server");
             }
         });
     }
 }
 
+function favChampError(num, data) {
+    $("#player" + num + "MostPlayedChamp").html("n/a");
+    if (data.status.status_code == 429)
+        tooManyRequests();
+}
+
 function setMostPlayedRole(name, summId, num, reg) {
     if (currDate.getTime() - getSummoner(name).lastVisit < ONE_DAY && getSummoner(name).main !== undefined) {
-        console.log("getting most played role from storage");
+        // console.log("getting most played role from storage");
         var summoner = getSummoner(name);
         var main = summoner.main;
         $("#player" + num + "MostPlayedRole").html(main);
     } else {
         $.ajax({
-            url: "https://" + reg + ".api.pvp.net/api/lol/" + reg + "/v2.2/matchlist/by-summoner/" + summId + "?rankedQueues=TEAM_BUILDER_RANKED_SOLO&api_key=" + API_KEY,
-            type: 'GET',
+            type: "POST",
+            url: "apiCall.php",
+            dataType: "json",
             data: {
-
+                'url': "https://" + reg + ".api.pvp.net/api/lol/" + reg + "/v2.2/matchlist/by-summoner/" + summId + "?rankedQueues=TEAM_BUILDER_RANKED_SOLO&api_key="
             },
             success: function(json) {
+                // console.log(json);
+                if (json.status !== undefined) {
+                    mostPlayedRoleError(num, json);
+                    return;
+                }
                 var main = getMostPlayedRole(json.matches);
                 var summoner = getSummoner(name);
                 summoner.main = main;
-                console.log("Storing main role");
+                // console.log("Storing main role");
                 storeSummoner(name, summoner);
                 $("#player" + num + "MostPlayedRole").html(main);
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
-                document.getElementById("player" + num + "MostPlayedRole").innerHTML = "n/a";
-                if (errorThrown === "Too Many Requests") {
-                    alert("Too may requests please wait 10 seconds");
-                    disableSearchButtons();
-                    setTimeout(enableSearchButtons, 10000);
-                }
+                alert("Something went wrong when accessing php server.");
             }
         });
     }
+}
+
+function mostPlayedRoleError(num, data) {
+    $("#player" + num + "MostPlayedRole").html("n/a");
+    if (data.status.status_code == 429)
+        tooManyRequests();
 }
 
 function getMostPlayedRole(matches) {
