@@ -106,6 +106,10 @@ function summonerLookup(playerNum) {
                         lastVisit: date.getTime()
                     };
                     storeSummoner(SUMMONER_NAME_NO_SPACE, summoner);
+                    $('.hr-1-2').hide();
+                    $('.hr-2-2').hide();
+                    $('#player1DetailedInfo').slideUp();
+                    $('#player2DetailedInfo').slideUp();
                     getSummonerRank(SUMMONER_NAME_NO_SPACE, summonerId, playerNum, REGION);
                     resetTextColors();
                 },
