@@ -28,10 +28,10 @@ function enableSearchButtons() {
 }
 
 function setRegion(regionVal, selectorId) {
-	regionVal = $(regionVal).attr("value");
-	$(selectorId).text(regionVal);
-	regionVal = regionVal.toLowerCase();
-	$(selectorId).attr("value", regionVal);
+	var val = $(regionVal).attr("value");
+	var regionName = $(regionVal).attr("name");
+	$(selectorId).text(regionName);
+	$(selectorId).attr("value", val);
 }
 
 function summonerLookup(playerNum) {
@@ -64,24 +64,25 @@ function summonerLookup(playerNum) {
 			else
 				currSumm2 = SUMMONER_NAME_NO_SPACE;
 			SUMMONER_NAME = summoner.name;
-			var summonerId = summoner.id;
+			var summonerId = summoner.summonerId;
+			var accId = summoner.accountId;
 			var profileIconNum = summoner.icon;
 			REGION = summoner.region;
 			$('#player' + playerNum + 'ProfileIcon').attr("src", "https://ddragon.leagueoflegends.com/cdn/6.24.1/img/profileicon/" + profileIconNum + ".png");
 			$('#summonerName' + playerNum).html(SUMMONER_NAME);
-			// console.log("calling using local storage");
-			getSummonerRank(SUMMONER_NAME_NO_SPACE, summonerId, playerNum, REGION);
+		 console.log("calling using local storage");
+			getSummonerRank(SUMMONER_NAME_NO_SPACE, summonerId, accId, playerNum, REGION);
 		} else {
+		console.log(SUMMONER_NAME);
+		console.log(REGION);
 			$.ajax({
 				type: "POST",
 				url: "apiCall.php",
 				dataType: "json",
 				data: {
-					'url': 'https://' + REGION + '.api.pvp.net/api/lol/' + REGION + '/v1.4/summoner/by-name/' + SUMMONER_NAME_NO_SPACE + '?api_key='
+					'url': 'https://' + REGION + '.api.riotgames.com/lol/summoner/v3/summoners/by-name/' + SUMMONER_NAME_NO_SPACE + '?api_key='
 				},
 				success: function(json) {
-					// console.log("php received");
-					// console.log(json);
 					if (json.status !== undefined) {
 						searchError(json)
 						return;
@@ -90,22 +91,24 @@ function summonerLookup(playerNum) {
 						currSumm1 = SUMMONER_NAME_NO_SPACE;
 					else
 						currSumm2 = SUMMONER_NAME_NO_SPACE;
-					SUMMONER_NAME = json[SUMMONER_NAME_NO_SPACE].name;
-					var summonerId = json[SUMMONER_NAME_NO_SPACE].id;
-					var profileIconNum = json[SUMMONER_NAME_NO_SPACE].profileIconId;
+					SUMMONER_NAME = json.name;
+					var summonerId = json.id;
+					var accId = json.accountId;
+					var profileIconNum = json.profileIconId;
 					$('#player' + playerNum + 'ProfileIcon').attr("src", "https://ddragon.leagueoflegends.com/cdn/6.24.1/img/profileicon/" + profileIconNum + ".png");
 					$('#summonerName' + playerNum).html(SUMMONER_NAME);
 					var date = new Date();
 					var summoner = {
 						search: SUMMONER_NAME_NO_SPACE,
 						name: SUMMONER_NAME,
-						id: summonerId,
+						summonerid: summonerId,
+						accountId: accId,
 						icon: profileIconNum,
 						region: REGION,
 						lastVisit: date.getTime()
 					};
 					storeSummoner(SUMMONER_NAME_NO_SPACE, summoner);
-					getSummonerRank(SUMMONER_NAME_NO_SPACE, summonerId, playerNum, REGION);
+					getSummonerRank(SUMMONER_NAME_NO_SPACE, summonerId, accId, playerNum, REGION);
 				},
 				error: function(XMLHttpRequest, textStatus, errorThrown) {
 					alert("Something went wrong when accessing server.");
@@ -178,7 +181,7 @@ function resetTextColors() {
 	$("#player2CS").html($("#player2CS").html().split(" ")[4]);
 }
 
-function getSummonerRank(name, summonerId, playerNum, reg) {
+function getSummonerRank(name, summonerId, accountId, playerNum, reg) {
 	resetTextColors();
 	$('.hr-' + playerNum + '-1').show();
 	$('#player' + playerNum + 'MainInfo').slideDown();
@@ -202,32 +205,38 @@ function getSummonerRank(name, summonerId, playerNum, reg) {
 			$("#summoner1Rank").html() !== "Unranked" && $("#summoner2Rank").html() !== "Unranked") {
 			$('#compare').prop("disabled", false);
 		}
-		getPlayerStats(name, summonerId, playerNum, reg);
+		getPlayerStats(name, summonerId, accountId, playerNum, reg);
 	} else {
+		console.log("getting rank");
+		console.log(name);
+		console.log(summonerId);
+		console.log(reg);
+		console.log(playerNum);
 		$.ajax({
 			type: "POST",
 			url: "apiCall.php",
 			dataType: "json",
 			data: {
-				'url': "https://" + reg + ".api.pvp.net/api/lol/" + reg + "/v2.5/league/by-summoner/" + summonerId + "/entry/" + "?api_key="
+				'url': "https://" + reg + ".api.riotgames.com/lol/league/v3/positions/by-summoner/" + summonerId + "?api_key="
 			},
 			success: function(json) {
-				// console.log(json);
+				console.log(json);
+
 				if (json.status !== undefined) {
 					rankedError(playerNum, json);
 					return;
 				}
-				var tier = json[summonerId][0].tier;
+				var tier = json[0].tier;
 				tier = tier.toLowerCase().split('')
 				tier[0] = tier[0].toUpperCase();
 				tier = tier.join('');
 				if (tier === "Master" || tier === "Challenger")
 					var division = "";
 				else
-					var division = json[summonerId][0].entries[0].division;
-				var lp = json[summonerId][0].entries[0].leaguePoints;
-				var wins = json[summonerId][0].entries[0].wins;
-				var losses = json[summonerId][0].entries[0].losses
+					var division = json[0].rank;
+				var lp = json[0].leaguePoints;
+				var wins = json[0].wins;
+				var losses = json[0].losses
 				var winRate = wins / (wins + losses) * 100;
 				winRate = winRate.toFixed(2);
 				var rankedIconLocation = setRankedIcon(tier, division);
@@ -248,7 +257,7 @@ function getSummonerRank(name, summonerId, playerNum, reg) {
 					$("#summoner1Rank").html() !== "Unranked" && $("#summoner2Rank").html() !== "Unranked") {
 					$('#compare').prop("disabled", false);
 				}
-				getPlayerStats(name, summonerId, playerNum, reg);
+				getPlayerStats(name, summonerId, accountId, playerNum, reg);
 			},
 			error: function(XMLHttpRequest, textStatus, errorThrown) {
 				alert("Something went wrong when accessing php server.");
@@ -277,7 +286,7 @@ function setRankedIcon(tier, division) {
 	return location
 }
 
-function getPlayerStats(name, summonerId, num, reg) {
+function getPlayerStats(name, summonerId, accId, num, reg) {
 	if (currDate.getTime() - getSummoner(name).lastVisit < ONE_DAY && getSummoner(name).kda !== undefined) {
 		// console.log("Getting player data from storage");
 		var summoner = getSummoner(name);
@@ -297,64 +306,74 @@ function getPlayerStats(name, summonerId, num, reg) {
 		setMostPlayedRole(name, summonerId, num, reg);
 		$("#player" + num + "MostPlayedWR").html(favChampWR);
 	} else {
+		console.log("getting Stats");
 		$.ajax({
 			type: "POST",
 			url: "apiCall.php",
 			dataType: "json",
 			data: {
-				'url': "https://" + reg + ".api.pvp.net/api/lol/" + reg + "/v1.3/stats/by-summoner/" + summonerId + "/ranked?api_key="
+				'url': "https://" + reg + ".api.riotgames.com/lol/match/v3/matchlists/by-account/" + accId + "?queue=420&season=9&api_key="
 			},
 			success: function(json) {
-				// console.log(json);
+				console.log(json);
 				if (json.status !== undefined) {
 					statsError(num, json);
 					return;
 				}
-				var data = json.champions;
-				var totals;
-				for (var key in data) {
-					if (data[key].id == 0) {
-						totals = data[key];
-						break;
-					}
+				var statCounter = {
+					kills: 0,
+					deaths: 0,
+					assists: 0,
+					cs: 0,
+					games: 0
 				}
-				totals = totals.stats;
-				var favChampId = getFavoriteChampionId(data);
-				var favChampWR = getFavChampWinRate(data, favChampId);
-				var totalKills = totals.totalChampionKills;
-				var totalDeaths = totals.totalDeathsPerSession;
-				var totalAssists = totals.totalAssists;
-				var totalCS = totals.totalMinionKills;
-				var totalGames = totals.totalSessionsPlayed;
-				var kda = (totalKills + totalAssists) / totalDeaths;
-				kda = kda.toFixed(2) + " : 1";
-
-				var avgKills = totalKills / totalGames;
-				avgKills = avgKills.toFixed(2);
-				var avgDeaths = totalDeaths / totalGames;
-				avgDeaths = avgDeaths.toFixed(2);
-				var avgAssists = totalAssists / totalGames;
-				avgAssists = avgAssists.toFixed(2);
-				var avgCS = totalCS / totalGames;
-				avgCS = avgCS.toFixed(2);
-				var summoner = getSummoner(name);
-				// console.log("storing new player stats");
-				summoner.favChampId = favChampId;
-				summoner.favChampWR = favChampWR;
-				summoner.kda = kda;
-				summoner.avgKills = avgKills;
-				summoner.avgDeaths = avgDeaths;
-				summoner.avgAssists = avgAssists;
-				summoner.avgCS = avgCS;
-				storeSummoner(name, summoner);
-				$('#player' + num + 'KDA').html(kda);
-				$('#player' + num + 'Kills').html(avgKills);
-				$('#player' + num + 'Deaths').html(avgDeaths);
-				$('#player' + num + 'Assists').html(avgAssists);
-				$('#player' + num + 'CS').html(avgCS);
-				setFavChampion(name, favChampId, num, reg);
-				setMostPlayedRole(name, summonerId, num, reg);
-				$("#player" + num + "MostPlayedWR").html(favChampWR);
+				console.log(json.totalGames);
+				statCounter.games = json.totalGames;
+				// var data = json.champions;
+				// var totals;
+				// for (var key in data) {
+				// 	if (data[key].id == 0) {
+				// 		totals = data[key];
+				// 		break;
+				// 	}
+				// }
+				// totals = totals.stats;
+				// var favChampId = getFavoriteChampionId(data);
+				// var favChampWR = getFavChampWinRate(data, favChampId);
+				// var totalKills = totals.totalChampionKills;
+				// var totalDeaths = totals.totalDeathsPerSession;
+				// var totalAssists = totals.totalAssists;
+				// var totalCS = totals.totalMinionKills;
+				// var totalGames = totals.totalSessionsPlayed;
+				// var kda = (totalKills + totalAssists) / totalDeaths;
+				// kda = kda.toFixed(2) + " : 1";
+				//
+				// var avgKills = totalKills / totalGames;
+				// avgKills = avgKills.toFixed(2);
+				// var avgDeaths = totalDeaths / totalGames;
+				// avgDeaths = avgDeaths.toFixed(2);
+				// var avgAssists = totalAssists / totalGames;
+				// avgAssists = avgAssists.toFixed(2);
+				// var avgCS = totalCS / totalGames;
+				// avgCS = avgCS.toFixed(2);
+				// var summoner = getSummoner(name);
+				// // console.log("storing new player stats");
+				// summoner.favChampId = favChampId;
+				// summoner.favChampWR = favChampWR;
+				// summoner.kda = kda;
+				// summoner.avgKills = avgKills;
+				// summoner.avgDeaths = avgDeaths;
+				// summoner.avgAssists = avgAssists;
+				// summoner.avgCS = avgCS;
+				// storeSummoner(name, summoner);
+				// $('#player' + num + 'KDA').html(kda);
+				// $('#player' + num + 'Kills').html(avgKills);
+				// $('#player' + num + 'Deaths').html(avgDeaths);
+				// $('#player' + num + 'Assists').html(avgAssists);
+				// $('#player' + num + 'CS').html(avgCS);
+				// setFavChampion(name, favChampId, num, reg);
+				// setMostPlayedRole(name, summonerId, num, reg);
+				// $("#player" + num + "MostPlayedWR").html(favChampWR);
 			},
 			error: function(XMLHttpRequest, textStatus, errorThrown) {
 				alert("Something went wrong when accessing php server");
@@ -374,6 +393,10 @@ function statsError(num, data) {
 	$("#player" + num + "MostPlayedRole").html("n/a");
 	if (data.status.status_code == 429)
 		tooManyRequests();
+}
+
+function getMatchData(matchId) {
+
 }
 
 function getFavoriteChampionId(data) {
