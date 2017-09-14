@@ -1,6 +1,6 @@
 <?php
   header('Content-Type: application/json');
-  $API_KEY = 'RGAPI-95c1ead7-4c6c-4a57-b559-42e5d44e61c5';
+  $API_KEY = 'RGAPI-d51c2b90-57fb-4bc5-b1eb-a59f2a112679';
   $url = $_POST['url'];
   $url = $url.$API_KEY;
 

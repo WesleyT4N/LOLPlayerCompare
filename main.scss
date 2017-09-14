@@ -2,8 +2,6 @@ $navbar-color: #0B1317;
 $navbar-font-color: #175CC4;
 $navbar-font-color-interacted:#175CC4;
 $border-color: #D8D8D8;
-//#C9AA71; light gold
-//#AD9262; dark gold
 .navbar {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     .navbar-brand {
@@ -66,14 +64,14 @@ body {
     margin-top: -4%;
     margin-bottom: -4%;
     .player-name {
-      .profile-icon {
-        max-width: 48px;
-        max-height: 48px;
-        vertical-align:middle;
-        margin-bottom: 8px;
-        border: 2px solid white;
-        box-shadow: 0px 0px 1px black;
-      }
+        .profile-icon {
+            max-width: 48px;
+            max-height: 48px;
+            vertical-align: middle;
+            margin-bottom: 8px;
+            border: 2px solid white;
+            box-shadow: 0px 0px 1px black;
+        }
     }
     .rank-icon {
         max-width: 150px;
@@ -108,13 +106,13 @@ hr {
 }
 
 #compare {
-  border-radius: 0px;
-  background-color: $navbar-font-color;
-  font-size: 24px;
-  font-family: 'Armata', sans-serif;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    border-radius: 0px;
+    background-color: $navbar-font-color;
+    font-size: 24px;
+    font-family: 'Armata', sans-serif;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
 }
 
 #compare:active {
-  background-color: #13458e;
+    background-color: #13458e;
 }

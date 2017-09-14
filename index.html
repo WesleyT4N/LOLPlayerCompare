@@ -2,172 +2,175 @@
 <html lang="en">
 
 <head>
-  <title>LoLPlayerCompare</title>
-  <meta charset="utf-8" />
-  <meta author="Wesley Tan" />
-  <meta name="viewport" content="width=device-width, initial-scale=.85">
-  <script>window.location="?#";</script>
-  <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon.png">
-  <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
-  <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
-  <link rel="manifest" href="/manifest.json">
-  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
-  <meta name="theme-color" content="#ffffff">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-  <link href="https://fonts.googleapis.com/css?family=Armata" rel="stylesheet">
-  <script src="https://use.fontawesome.com/7b04bb0313.js"></script>
-  <link rel="stylesheet" href="main.nested.css">
-  <script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA=" crossorigin="anonymous"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-  <script src="main.js"></script>
+    <title>LoLPlayerCompare</title>
+    <meta charset="utf-8" />
+    <meta author="Wesley Tan" />
+    <meta name="viewport" content="width=device-width, initial-scale=.85">
+    <script>
+        window.location = "?#";
+    </script>
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Armata" rel="stylesheet">
+    <script src="https://use.fontawesome.com/7b04bb0313.js"></script>
+    <link rel="stylesheet" href="main.nested.css">
+    <script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="main.js"></script>
 </head>
 
 <body>
-  <nav class="navbar navbar-default navbar-fixed-top container-fluid">
-    <div class="container">
-      <a class="nav navbar-brand" href=".">
-        <span id="LoL">LoL</span> PlayerCompare
-      </a>
-    </div>
-  </nav>
-  <div class="container row center-block" id="mainContentBox">
-    <div class="col-md-6">
-      <div id="pane1" class="pane container-fluid">
-        <form class="form" onsubmit="summonerLookup(1)">
-          <div class="player-search input-group col-md-8 col-md-offset-2">
-            <div class="input-group-btn">
-              <button id="player1Region" type="button" value="" class="btn btn-default dropdown-toggle form-control" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <nav class="navbar navbar-default navbar-fixed-top container-fluid">
+        <div class="container">
+            <a class="nav navbar-brand" href=".">
+                <span id="LoL">LoL</span> PlayerCompare
+            </a>
+        </div>
+    </nav>
+    <div class="container row center-block" id="mainContentBox">
+        <div class="col-md-6">
+            <div id="pane1" class="pane container-fluid">
+                <form class="form" onsubmit="summonerLookup(1)">
+                    <div class="player-search input-group col-md-8 col-md-offset-2">
+                        <div class="input-group-btn">
+                            <button id="player1Region" type="button" value="" class="btn btn-default dropdown-toggle form-control" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Region
               </button>
-              <ul class="dropdown-menu region-menu">
-                <li id="na1" value="na1" name="NA"><a href="#" onclick="setRegion(na1, player1Region)">NA</a></li>
-                <li id="euw1" value="euw1" name="EUW"><a href="#" onclick="setRegion(euw1, player1Region)">EUW</a></li>
-              </ul>
-            </div>
-            <input id="player1Search" class="search-box form-control" type="text" placeholder="Summoner 1" oninput="newSearch(1)"/>
-            <div class="input-group-btn">
-              <button class="btn btn-default" id="search1" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
-            </div>
-          </div>
-        </form>
-        <hr class ="hr-1-1"/>
-        <div id="player1MainInfo" class="main-info container-fluid row">
-          <h1 class="text-center player-name col-md-12">
-            <img id="player1ProfileIcon" class="profile-icon" src="" />
-            <span id="summonerName1"></span>
-          </h1>
-          <h2 class="text-center player-rank col-md-8">
-            <span id="summoner1Rank"></span>
-            <br/>
-            <span>
+                            <ul class="dropdown-menu region-menu">
+                                <li id="na1" value="na1" name="NA"><a href="#" onclick="setRegion(na1, player1Region)">NA</a></li>
+                                <li id="euw1" value="euw1" name="EUW"><a href="#" onclick="setRegion(euw1, player1Region)">EUW</a></li>
+                            </ul>
+                        </div>
+                        <input id="player1Search" class="search-box form-control" type="text" placeholder="Summoner 1" oninput="newSearch(1)" />
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" id="search1" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+                        </div>
+                    </div>
+                </form>
+                <hr class="hr-1-1" />
+                <div id="player1MainInfo" class="main-info container-fluid row">
+                    <h1 class="text-center player-name col-md-12">
+                        <img id="player1ProfileIcon" class="profile-icon" src="" onerror="showDefaultImg()" />
+                        <span id="summonerName1"></span>
+                    </h1>
+                    <h2 class="text-center player-rank col-md-8">
+                        <span id="summoner1Rank"></span>
+                        <br/>
+                        <span>
               <h3>Win Ratio: <span id="summoner1WinRatio" ></spanid></h3>
               </span>
-            </h2>
-            <img id="summoner1RankIcon" class="col-md-4 rank-icon center-block img-responseive" src="" alt="Rank Icon">
-          </div>
-          <hr class ="hr-1-2"/>
-          <div id="player1DetailedInfo" class="detailed-info container-fluid">
-            <h2 class="text-center">Ranked Stats</h2>
-            <div id="player1MiscInfo" class="col-md-6 misc-info">
-              <h3 class="text-center">Most Played Champion:</h3>
-              <img id="player1MostPlayedIcon" class="most-played-icon center-block" src="" alt="Most Played Champion Icon" />
-              <h4 id="player1MostPlayedChamp" class="most-played-champ text-center"></h4>
-              <h4 class="text-center">Win Rate:
-                <span id="player1MostPlayedWR" class="most-played-winrate">--.-%</span>
-              </h4>
-              <h3 class="text-center">Main Role:
-                <span id="player1MostPlayedRole" class="most-played-role" style="font-size: 20px;"></span>
-              </h3>
+                    </h2>
+                    <img id="summoner1RankIcon" class="col-md-4 rank-icon center-block img-responseive" src="" alt="Rank Icon">
+                </div>
+                <hr class="hr-1-2" />
+                <div id="player1DetailedInfo" class="detailed-info container-fluid">
+                    <h2 class="text-center">Ranked Stats</h2>
+                    <div id="player1MiscInfo" class="col-md-6 misc-info">
+                        <h3 class="text-center">Most Played Champion:</h3>
+                        <img id="player1MostPlayedIcon" class="most-played-icon center-block" src="" alt="Most Played Champion Icon" />
+                        <h4 id="player1MostPlayedChamp" class="most-played-champ text-center"></h4>
+                        <h4 class="text-center">Win Rate:
+                            <span id="player1MostPlayedWR" class="most-played-winrate">--.-%</span>
+                        </h4>
+                        <h3 class="text-center">Main Role:
+                            <span id="player1MostPlayedRole" class="most-played-role" style="font-size: 20px;"></span>
+                        </h3>
+                    </div>
+                    <div id="player1Numerics" class="col-md-6 numerical-info">
+                        <div class="border"></div>
+                        <h3 class="kda text-center">Average KDA:
+                            <br/><span id="player1KDA"></span></h3>
+                        <h3 class="text-center">Averages:</h3>
+                        <h4 class="kills">Kills<span id="player1Kills" style="float:right;"></span></h4>
+                        <h4 class="deaths">Deaths<span id="player1Deaths" style="float:right;"></span></h4>
+                        <h4 class="assists">Assists<span id="player1Assists" style="float:right;"></span></h4>
+                        <h4 class="cs">CS<span id="player1CS" style="float:right;"></span></h4>
+                    </div>
+                </div>
             </div>
-            <div id="player1Numerics" class="col-md-6 numerical-info">
-              <div class="border"></div>
-              <h3 class="kda text-center">Average KDA:
-                <br/><span id="player1KDA" ></span></h3>
-                <h3 class="text-center">Averages:</h3>
-                <h4 class="kills">Kills<span id="player1Kills" style="float:right;"></span></h4>
-                <h4 class="deaths">Deaths<span id="player1Deaths" style="float:right;"></span></h4>
-                <h4 class="assists">Assists<span id="player1Assists" style="float:right;"></span></h4>
-                <h4 class="cs">CS<span id="player1CS" style="float:right;"></span></h4>
-              </div>
-            </div>
-          </div>
         </div>
         <div class="col-md-6">
-          <div id="pane2" class="pane container-fluid">
-            <form class="form" onsubmit="summonerLookup(2)">
+            <div id="pane2" class="pane container-fluid">
+                <form class="form" onsubmit="summonerLookup(2)">
 
-              <div class="player-search input-group col-md-8 col-md-offset-2">
-                <div class="input-group-btn">
-                  <button id="player2Region" type="button" value="" class="btn btn-default dropdown-toggle form-control" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <div class="player-search input-group col-md-8 col-md-offset-2">
+                        <div class="input-group-btn">
+                            <button id="player2Region" type="button" value="" class="btn btn-default dropdown-toggle form-control" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Region
                   </button>
-                  <ul class="dropdown-menu region-menu" id="regionMenu1">
-                    <li id="na2" value="na1" name="NA"><a href="#"  onclick="setRegion(na2, player2Region)">NA</a></li>
-                    <li id="euw2" value="euw1" name="EUW"><a href="#" onclick="setRegion(euw2, player2Region)">EUW</a></li>
-                  </ul>
-                </div>
-                <input id="player2Search" class="search-box form-control" type="text" placeholder="Summoner 2" oninput="newSearch(2)" />
-                <div class="input-group-btn">
-                  <button class="btn btn-default" id="search2" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
-                </div>
-              </div>
-            </form>
-            <hr class ="hr-2-1"/>
-            <div id="player2MainInfo" class="main-info container-fluid row">
-              <h1 class="text-center player-name col-md-12">
-                <img id="player2ProfileIcon" class="profile-icon" src=""/>
-                <span id="summonerName2"></span>
-              </h1>
-              <h2 class="text-center player-rank col-md-8">
-                <span id="summoner2Rank"></span>
-                <br/>
-                <span>
+                            <ul class="dropdown-menu region-menu" id="regionMenu1">
+                                <li id="na2" value="na1" name="NA"><a href="#" onclick="setRegion(na2, player2Region)">NA</a></li>
+                                <li id="euw2" value="euw1" name="EUW"><a href="#" onclick="setRegion(euw2, player2Region)">EUW</a></li>
+                            </ul>
+                        </div>
+                        <input id="player2Search" class="search-box form-control" type="text" placeholder="Summoner 2" oninput="newSearch(2)" />
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" id="search2" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+                        </div>
+                    </div>
+                </form>
+                <hr class="hr-2-1" />
+                <div id="player2MainInfo" class="main-info container-fluid row">
+                    <h1 class="text-center player-name col-md-12">
+                        <img id="player2ProfileIcon" class="profile-icon" src="" onerror="showDefaultImg()" />
+                        <span id="summonerName2"></span>
+                    </h1>
+                    <h2 class="text-center player-rank col-md-8">
+                        <span id="summoner2Rank"></span>
+                        <br/>
+                        <span>
                   <h3>Win Ratio: <span id="summoner2WinRatio" ></span></h3>
-                </span>
-              </h2>
-              <img id="summoner2RankIcon" class="col-md-4 rank-icon center-block" src="" alt="Rank Icon">
-            </div>
-            <hr class ="hr-2-2"/>
-            <div id="player2DetailedInfo" class="detailed-info container-fluid row">
-              <h2 class="text-center">Ranked Stats</h2>
-              <div id="player2Numerics" class="col-md-6 numerical-info">
-                <h3 class="kda text-center">Average KDA:
-                  <br/><span id="player2KDA"></span></h3>
-                  <h3 class="text-center">Averages:</h3>
-                  <h4 class="kills">
-                    <span id="player2Kills"></span>
-                    <span style="float:right">Kills</span>
-                  </h4>
-                  <h4 class="deaths">
-                    <span id="player2Deaths"></span>
-                    <span style="float:right">Deaths</span>
-                  </h4>
-                  <h4 class="assists">
-                    <span id="player2Assists"></span>
-                    <span style="float:right">Assists</span>
-                  </h4>
-                  <h4 class="cs">
-                    <span id="player2CS"></span><span style="float:right;">CS</span>
-                  </h4>
+                        </span>
+                    </h2>
+                    <img id="summoner2RankIcon" class="col-md-4 rank-icon center-block" src="" alt="Rank Icon">
                 </div>
-                <div id="player2MiscInfo" class="col-md-6 misc-info">
-                  <div class="border"></div>
-                  <h3 class="text-center">Most Played Champion:</h3>
-                  <img id="player2MostPlayedIcon" class="most-played-icon center-block" src="" alt="Most Played Champion Icon" />
-                  <h4 id="player2MostPlayedChamp" class="most-played-champ text-center">[--------]</h4>
-                  <h4 class="text-center">Win Rate:
-                    <span id="player2MostPlayedWR" class="most-played-winrate">--.-%</span>
-                  </h4>
-                  <h3 class="text-center">Main Role:
-                    <span id="player2MostPlayedRole"class="most-played-role" style="font-size: 20px;"></span>
-                  </h3>
+                <hr class="hr-2-2" />
+                <div id="player2DetailedInfo" class="detailed-info container-fluid row">
+                    <h2 class="text-center">Ranked Stats</h2>
+                    <div id="player2Numerics" class="col-md-6 numerical-info">
+                        <h3 class="kda text-center">Average KDA:
+                            <br/><span id="player2KDA"></span></h3>
+                        <h3 class="text-center">Averages:</h3>
+                        <h4 class="kills">
+                            <span id="player2Kills"></span>
+                            <span style="float:right">Kills</span>
+                        </h4>
+                        <h4 class="deaths">
+                            <span id="player2Deaths"></span>
+                            <span style="float:right">Deaths</span>
+                        </h4>
+                        <h4 class="assists">
+                            <span id="player2Assists"></span>
+                            <span style="float:right">Assists</span>
+                        </h4>
+                        <h4 class="cs">
+                            <span id="player2CS"></span><span style="float:right;">CS</span>
+                        </h4>
+                    </div>
+                    <div id="player2MiscInfo" class="col-md-6 misc-info">
+                        <div class="border"></div>
+                        <h3 class="text-center">Most Played Champion:</h3>
+                        <img id="player2MostPlayedIcon" class="most-played-icon center-block" src="" alt="Most Played Champion Icon" />
+                        <h4 id="player2MostPlayedChamp" class="most-played-champ text-center">[--------]</h4>
+                        <h4 class="text-center">Win Rate:
+                            <span id="player2MostPlayedWR" class="most-played-winrate">--.-%</span>
+                        </h4>
+                        <h3 class="text-center">Main Role:
+                            <span id="player2MostPlayedRole" class="most-played-role" style="font-size: 20px;"></span>
+                        </h3>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
         </div>
-          <div id="compareDiv" class="container center-block text-center">
-            <button id="compare" type="button" class="btn btn-primary btn-lg" onclick="compare()">Compare</button>
-          </div>
-        </body>
-        </html>
+    </div>
+    <div id="compareDiv" class="container center-block text-center">
+        <button id="compare" type="button" class="btn btn-primary btn-lg" onclick="compare()">Compare</button>
+    </div>
+</body>
+
+</html>
